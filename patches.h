@@ -1,7 +1,8 @@
 #include "tro.h"
 
 struct patch_def {
-	char text[20];
+	const char text[22];
+	char enabled;
 	uint32_t addr;
 	char patch;
 };
@@ -13,9 +14,9 @@ struct patch_data {
 
 static struct patch_data PATCHES = {.patch_num = 4,
 				.patches = {
-				{"ZZZZZZZZZZZZZZZZZZZ",0x8c010000,'00'},
-				{"ZZZZZZZZZZZZZZZZZZZ",0x8c010000,'00'},
-				{"ZZZZZZZZZZZZZZZZZZZ",0x8c010000,'00'},
-				{"ZZZZZZZZZZZZZZZZZZZ",0x8c010000,'00'}
+				{"ZZZZZZZZZZZZZZZZZZZZZ",0,0x8c010000,'00'},
+				{"AZZZZZZZZZZZZZZZZZZZZ",0,0x8c010000,'00'},
+				{"XZZZZZZZZZZZZZZZZZZZZ",0,0x8c010000,'00'},
+				{"CZZZZZZZZZZZZZZZZZZZZ",0,0x8c010000,'00'}
 				}
 };

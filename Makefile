@@ -1,7 +1,7 @@
 BINA = boot1
 BINB = bootstrap
 OBJS = crt0.o go.o disable.o warez_load.o 
-OBJS_B1 = startup.o main.o video.o maple.o biossymbol.o scramble.o sleep.o crt1.o go.o disable.o warez_load.o patch.o patcher.o graphics.o menu.o
+OBJS_B1 = startup.o main.o video.o maple.o biossymbol.o scramble.o sleep.o crt1.o go.o disable.o warez_load.o patch.o patcher.o graphics.o menu.o sq.o
 
 include ./Makefile.config
 
