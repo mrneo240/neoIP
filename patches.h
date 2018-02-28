@@ -1,4 +1,9 @@
+#ifndef PATCH_H
+#define PATCH_H
+
 #include "tro.h"
+
+#define NUM_PATCHES 5
 
 struct patch_def {
 	const char text[22];
@@ -9,14 +14,7 @@ struct patch_def {
 
 struct patch_data {
 	int patch_num;
-	struct patch_def patches[4];
+	struct patch_def patches[NUM_PATCHES];
 };
 
-static struct patch_data PATCHES = {.patch_num = 4,
-				.patches = {
-				{"ZZZZZZZZZZZZZZZZZZZZZ",0,0x8c010000,'00'},
-				{"AZZZZZZZZZZZZZZZZZZZZ",0,0x8c010000,'00'},
-				{"XZZZZZZZZZZZZZZZZZZZZ",0,0x8c010000,'00'},
-				{"CZZZZZZZZZZZZZZZZZZZZ",0,0x8c010000,'00'}
-				}
-};
+#endif

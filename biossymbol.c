@@ -222,8 +222,8 @@ void bfont_draw_symbol(uint16_t *buffer, char c){
 void bfont_draw_large_str(uint16_t *buffer, int width, char *str) {
 	for (str; *str != '\0'; str++){
 		if(*str == ' '){buffer+=32;str++;}
-		bfont_draw_large_letter(buffer, upper(*str));
-		buffer += 32;
+		bfont_draw_large_letter(buffer+=32, upper(*str));
+		//buffer += 32;
 	}
 	//while (*str)
 	//	bfont_draw_large_letter(buffer += 32, *str++);

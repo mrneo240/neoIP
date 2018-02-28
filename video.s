@@ -1,7 +1,7 @@
 
-
 	.globl	_check_cable, _init_video, _clrscr, _clrscr2, _draw_string
 	.globl	_draw_char12, _draw_char24, _get_font_address
+	.globl _videobase, _vrambase
 			
 	.text
 
@@ -74,7 +74,7 @@ _draw_char12:
 	add	r5,r0
 	shll8	r0
 	add	r4,r0
-	mov.l	vrambase,r1
+	mov.l	_vrambase,r1
 	bra	decided
 	add	r1,r0
 	
@@ -95,7 +95,7 @@ draw_ascii12:
 	add	r5,r0
 	shll8	r0
 	add	r4,r0
-	mov.l	vrambase,r1
+	mov.l	_vrambase,r1
 	add	r1,r0
 
 	! Find right char in font
@@ -208,7 +208,7 @@ _draw_char24:
 	add	r5,r0
 	shll8	r0
 	add	r4,r0
-	mov.l	vrambase,r1
+	mov.l	_vrambase,r1
 	add	r1,r0
 
 	! Add offset of selected char to font addr
@@ -279,7 +279,7 @@ wdrawmod:
 
 	! r4 = pixel colour
 _clrscr:	
-	mov.l	vrambase,r0
+	mov.l	_vrambase,r0
 	mov.l	clrcount,r1
 clrloop:
 	mov.w	r4,@r0	! clear one pixel
@@ -296,7 +296,7 @@ clrloop:
 
 	! r4 = pixel colour
 _clrscr2:	
-	mov.l	vrambase,r0
+	mov.l	_vrambase,r0
 	mov.l	clrcount2,r1
 clrloop2:
 	mov.w	r4,@r0	! clear one pixel
@@ -307,7 +307,7 @@ clrloop2:
 	nop
 	
 	.align	4
-vrambase:
+_vrambase:
 	.long	0xa5000000
 clrcount:
 	.long	640*480
@@ -334,7 +334,7 @@ _init_video:
 	mova	bppshifttab,r0
 	mov.b	@(r0,r1),r5
 	! Get video HW address
-	mov.l	videobase,r0
+	mov.l	_videobase,r0
 	mov	#0,r2
 	mov.l	r2,@(8,r0)
 	add	#0x40,r0
@@ -418,7 +418,7 @@ rgbmode:
 	nop
 	
 	.align	4
-videobase:
+_videobase:
 	.long	0xa05f8000
 cvbsbase:
 	.long	0xa0702c00

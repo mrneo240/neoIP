@@ -23,7 +23,7 @@
 /* Various 32-bit sized patches that we perform on the main game binary. The first
    number in the list is the number of patches performed for that version. The
    rest of the numbers are in <address, value> pairs. */
-static const uint32_t patch_tables[1][23] = {
+static const uint32_t patch_tables[23] = {
     /* PSOv1 Japanese -- HL Check only */
     /*{
         1,
@@ -33,12 +33,12 @@ static const uint32_t patch_tables[1][23] = {
         0x00000000, 0x00000000, 0x00000000, 0x00000000
     },*/
     /* No Patches */
-    {
+    //{
         0,
         0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
         0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
         0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
         0x00000000, 0x00000000, 0x00000000, 0x00000000
-	}
+	//}
 };
 #endif /* !PATCHES_H */

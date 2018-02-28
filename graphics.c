@@ -1,13 +1,18 @@
 #include "tro.h"
+#include "graphics.h"
 //http://paradise.untergrund.net/tmp/roinat/
 
+
+static volatile uint16_t* frontBuffer=0;
+volatile uint16_t* backBuffer=0;
+extern uint16_t *vrambase;
 
 void fillBox(int x, int y, int width, int height, int color)
 {
 	int i,j;
 	for (i=x; i<x+width; i++) {
 		for (j=y; j<y+height; j++) {
-			*(vram_s+BUFFER_POS(i,j)) = color;
+			*(backBuffer+BUFFER_POS(i,j)) = color;
 		}
 	}
 }
@@ -21,15 +26,15 @@ void v_circle(int x, int y, int radius, int r, int g, int b)
 	balance=-radius;
 
 	do {
-		*(vram_s+BUFFER_POS(x+xoff, y+yoff)) = RGB(r,g,b);
-		*(vram_s+BUFFER_POS(x-xoff, y+yoff)) = RGB(r,g,b);
-		*(vram_s+BUFFER_POS(x-xoff, y-yoff)) = RGB(r,g,b);
-		*(vram_s+BUFFER_POS(x+xoff, y-yoff)) = RGB(r,g,b);
+		*(backBuffer+BUFFER_POS(x+xoff, y+yoff)) = RGB(r,g,b);
+		*(backBuffer+BUFFER_POS(x-xoff, y+yoff)) = RGB(r,g,b);
+		*(backBuffer+BUFFER_POS(x-xoff, y-yoff)) = RGB(r,g,b);
+		*(backBuffer+BUFFER_POS(x+xoff, y-yoff)) = RGB(r,g,b);
 
-		*(vram_s+BUFFER_POS(x+yoff, y+xoff)) = RGB(r,g,b);
-		*(vram_s+BUFFER_POS(x-yoff, y+xoff)) = RGB(r,g,b);
-		*(vram_s+BUFFER_POS(x-yoff, y-xoff)) = RGB(r,g,b);
-		*(vram_s+BUFFER_POS(x+yoff, y-xoff)) = RGB(r,g,b);
+		*(backBuffer+BUFFER_POS(x+yoff, y+xoff)) = RGB(r,g,b);
+		*(backBuffer+BUFFER_POS(x-yoff, y+xoff)) = RGB(r,g,b);
+		*(backBuffer+BUFFER_POS(x-yoff, y-xoff)) = RGB(r,g,b);
+		*(backBuffer+BUFFER_POS(x+yoff, y-xoff)) = RGB(r,g,b);
 
 		if ((balance+= xoff++ + xoff) >=0) {
 			--yoff;
@@ -37,10 +42,7 @@ void v_circle(int x, int y, int radius, int r, int g, int b)
 		}
 	}
 	while (xoff <= yoff);
-
 }
-
-
 
 /*
    Copied from: kernel/arch/dreamcast/hardware/video.c
@@ -67,10 +69,6 @@ void vid_waitvbl() {
 		;
 }*/
 
-uint16_t* backBuffer=NULL;
-uint16_t* frontBuffer=NULL;
-
-
 /*-----------------------------------------------------------------------------*/
 void vid_set_start(uint32_t base)
 {
@@ -78,10 +76,7 @@ void vid_set_start(uint32_t base)
 
 	/* Set vram base of current framebuffer */
 	base &= 0x007FFFFF;
-	regs[0x14] = base;
-
-	/* These are nice to have. */
-	vram_s = (uint16_t*)(0xA5000000 | base);
+	videobase[0x14] = base;
 }
 
 /*-----------------------------------------------------------------------------*/
@@ -90,7 +85,7 @@ void vid_set_start(uint32_t base)
 */
 void vid_clear(uint16_t color)
 {
-	sq_set16(vram_s, color, (640 * 480) * 2);
+	sq_set16(backBuffer, color, (640 * 480) * 2);
 }
 
 /*-----------------------------------------------------------------------------*/
@@ -105,10 +100,11 @@ void vid_empty()
 }
 
 
-void initBuffers(void)
+void initBuffers()
 {
-	frontBuffer=vram_s=(uint16_t*)0xa5000000;
+	frontBuffer=(uint16_t*)0xa5000000;
 	backBuffer=(frontBuffer+(640*480));
+	vrambase = backBuffer;
 
 	vid_empty();
 	vid_set_start((uint32_t*)backBuffer);
@@ -116,13 +112,14 @@ void initBuffers(void)
 	vid_set_start((uint32_t*)frontBuffer);
 }
 
-void swapBuffers(void)
+void swapBuffers()
 {
 	uint16_t* temp;
 
 	temp=backBuffer;
 	backBuffer=frontBuffer;
 	frontBuffer=temp;
+	vrambase = backBuffer;
 	vid_waitvbl();
 	vid_set_start((uint32_t*)frontBuffer);
 }

@@ -23,9 +23,13 @@ void main (int argc, char **argv)
 
     memset (ip_buf, 0, sizeof (ip_buf));    
 
-    ip = fopen (argv[1], "r");
-    boot1 = fopen (argv[2], "r");
+    ip = fopen (argv[1], "rb");
+    boot1 = fopen (argv[2], "rb");
     //boot2 = fopen (argv[3], "r");
+	
+	fseek(boot1,0L,SEEK_END);
+	int boot1_length=ftell(boot1);
+	fseek(boot1,0L,SEEK_SET);
 	
 	ip_out= fopen(argv[3], "wb");
 
@@ -37,7 +41,7 @@ void main (int argc, char **argv)
         fprintf (stderr, "Unable to open '%s'.\n", argv[3]);*/
     else if (!fread (ip_buf, sizeof (ip_buf), 1, ip))
         fprintf (stderr, "Unable to read IP template.\n");
-    else if (!fread (ip_buf + 0x3800, 1, 0x2800, boot1))
+    else if (!fread (ip_buf + 0x3800, 1, boot1_length, boot1))
         fprintf (stderr, "Unable to read bootstrap 1.\n");
     //else if (!fread (ip_buf + 0x6000, 1, 0x2000, boot2))
     //    fprintf (stderr, "Unable to read bootstrap 2.\n");

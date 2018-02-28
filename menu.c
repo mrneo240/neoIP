@@ -1,7 +1,10 @@
 #include "tro.h"
 #include "maple.h"
+#include "patches.h"
 
-#define MAX_OPTIONS 4
+#define MAX_OPTIONS 8
+
+extern struct patch_data PATCHES;
 
 void strcpy(char* dest, char* src)
 {
@@ -23,7 +26,7 @@ struct a_menu {
 struct a_menu *new_menu (char *title)
 {
 	//struct a_menu *menu = (struct a_menu *) malloc (sizeof (struct a_menu));
-	memset(0xACDAF000,sizeof (struct a_menu));
+	memset(0xACDAF000, sizeof (struct a_menu));
 	struct a_menu *menu = (struct a_menu *)0xACDAF000;
 	int i;
 
@@ -39,14 +42,19 @@ struct a_menu *new_menu (char *title)
 	return menu;
 }
 
-
 int add_option (struct a_menu *menu, char *caption)
 {
+	add_option_ex(menu,caption,0);
+}
 
+int add_option_ex (struct a_menu *menu, char *caption, int enabled)
+{
 	if (menu -> num_of_options == MAX_OPTIONS)
 		return -1;
 
+	menu->enabled[menu->num_of_options]=enabled;
 	strcpy (menu -> options [menu -> num_of_options++], caption);
+
 
 	return (menu -> num_of_options - 1);    //returns the array posn of the caption
 }
@@ -54,9 +62,8 @@ int add_option (struct a_menu *menu, char *caption)
 int current = 0;
 int display_menu (struct a_menu *menu, int x, int y, int box_flag)
 {
-
 	int i, y2 = y, button = 1;
-	#define LINE_HEIGHT 28
+#define LINE_HEIGHT 32
 	int selected  = -1;
 
 	draw_string (x, y, menu -> title,0x0000);
@@ -68,42 +75,29 @@ int display_menu (struct a_menu *menu, int x, int y, int box_flag)
 		y += LINE_HEIGHT;
 	}
 
-	y = y2 + (LINE_HEIGHT*2);
-	v_circle (x - 10, y+(current*LINE_HEIGHT), 8, 0, 255, 0);
+	y = y2 + (LINE_HEIGHT*1.5)+8;
 
 	if(!update_input(CONT_DPAD_UP)) {
 		if (current > 0) {
-			v_circle (x - 10, y+(current*LINE_HEIGHT), 8, 0, 0, 0);
-			v_circle (x - 10, y+(current*LINE_HEIGHT), 8, 0, 255, 0);
 			current --;
-		}
-		else {
-			v_circle (x - 10, y+(current*LINE_HEIGHT), 8, 0, 0, 255);
-			v_circle (x - 10, y+(current*LINE_HEIGHT), 8, 0, 255, 0);
 		}
 	}
 
 	if(!update_input(CONT_DPAD_DOWN)) {
 		if (current < (menu -> num_of_options - 1)) {
-			v_circle (x - 10, y+(current*LINE_HEIGHT), 8, 0, 0, 0);
-			v_circle (x - 10, y+(current*LINE_HEIGHT), 8, 0, 255, 0);
 			current ++;
 		}
-		else {
-			v_circle (x - 10, y+(current*LINE_HEIGHT), 8, 0, 0, 255);
-			v_circle (x - 10, y+(current*LINE_HEIGHT), 8, 0, 255, 0);
-		}
 	}
-	v_circle (x - 10, y+(current*LINE_HEIGHT), 8, 0, 0, 255);
+
 	v_circle (x - 10, y+(current*LINE_HEIGHT), 8, 0, 255, 0);
+	v_circle (x - 10, y+(current*LINE_HEIGHT), 4, 0, 0, 255);
 
 	if(!update_input(CONT_A)) {
 		menu->enabled[current] = !menu->enabled[current];
+		PATCHES.patches[current].enabled = !PATCHES.patches[current].enabled;
 		selected = current+1;
 	}
-
-	//}  //end of while (button != btnX)
-
+	sleep_ms(40);
 
 	return selected;
 }
