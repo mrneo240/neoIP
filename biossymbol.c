@@ -4,7 +4,7 @@
  * (c)2000 Dan Potter
  */
 
-#include "tro.h"
+#include "neoIP.h"
 
 /*
 

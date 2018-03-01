@@ -1,4 +1,4 @@
-#include "tro.h"
+#include "neoIP.h"
 #include "maple.h"
 #include "graphics.h"
 #include "patches.h"
@@ -35,12 +35,6 @@ uint16_t update_input(int btn)
 //------------------------------------
 // Main Stuff
 //------------------------------------
-extern void start2(void);
-extern void fixbin(int choice);
-extern void bfont_draw_large_str(uint16_t *buffer, int width, char *str);
-extern void draw_char24(int x, int y, int ch, int rgb);
-extern void bfont_draw_mid_symbol(uint16_t *buffer, int chr);
-extern void bfont_draw_large_letter(uint16_t *buffer, uint8_t c);
 
 void main()
 {
@@ -156,10 +150,6 @@ void main()
 			(*(char*)(PATCHES.patches[scramble].addr))=PATCHES.patches[scramble].patch;
 		}
 	}
-	//setup_patching();
-	exception_init(0);
-			/* Use ASIC interrupts */
-	asic_init();
 	
 	start2();
 

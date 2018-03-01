@@ -4,7 +4,7 @@
    Copyright (C) 2001 Andrew Kieschnick
 */
 
-#include "tro.h"
+#include "neoIP.h"
 #include "sq.h"
 /*
     Functions to clear, copy, and set memory using the sh4 store queues

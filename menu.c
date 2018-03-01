@@ -1,4 +1,4 @@
-#include "tro.h"
+#include "neoIP.h"
 #include "maple.h"
 #include "patches.h"
 
@@ -62,8 +62,8 @@ int add_option_ex (struct a_menu *menu, char *caption, int enabled)
 int current = 0;
 int display_menu (struct a_menu *menu, int x, int y, int box_flag)
 {
-	int i, y2 = y, button = 1;
-#define LINE_HEIGHT 32
+	#define LINE_HEIGHT 32
+	int i, y2 = y;
 	int selected  = -1;
 
 	draw_string (x, y, menu -> title,0x0000);

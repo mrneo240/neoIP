@@ -1,4 +1,4 @@
-#include "tro.h"
+#include "neoIP.h"
 #include "graphics.h"
 //http://paradise.untergrund.net/tmp/roinat/
 
@@ -58,16 +58,6 @@ void vid_waitvbl() {
 	while (*vbl & 0x01ff)
 		;
 }
-/*void vid_waitvbl()
-{
-	volatile uint32_t *vbl = regs + 0x010c / 4;
-
-	while(!(*vbl & 0x01ff))
-		;
-
-	while(*vbl & 0x01ff)
-		;
-}*/
 
 /*-----------------------------------------------------------------------------*/
 void vid_set_start(uint32_t base)
