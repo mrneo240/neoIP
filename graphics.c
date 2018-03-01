@@ -51,7 +51,8 @@ void v_circle(int x, int y, int radius, int r, int g, int b)
    Parts (c)2000-2001 Dan Potter
   [This is the old KOS function by Dan.]
 */
-void vid_waitvbl() {
+void vid_waitvbl()
+{
 	volatile uint32_t *vbl = (uint32_t*)0xa05f810c;
 	while (!(*vbl & 0x01ff))
 		;
@@ -62,8 +63,6 @@ void vid_waitvbl() {
 /*-----------------------------------------------------------------------------*/
 void vid_set_start(uint32_t base)
 {
-	static uint8_t bpp[4] = { 2, 2, 0, 4 };
-
 	/* Set vram base of current framebuffer */
 	base &= 0x007FFFFF;
 	videobase[0x14] = base;
@@ -88,7 +87,6 @@ void vid_empty()
 	   can now move around */
 	sq_clr((uint32_t *)0xa5000000, 8 * 1024 * 1024);
 }
-
 
 void initBuffers()
 {

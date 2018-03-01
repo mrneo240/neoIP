@@ -6,15 +6,6 @@
 
 extern struct patch_data PATCHES;
 
-void strcpy(char* dest, char* src)
-{
-	int i=0;
-	while(src[i] != '\0' ) {
-		dest[i]=src[i++];
-	}
-	dest[i]=0;
-}
-
 struct a_menu {
 	char title[0x2e];
 	int num_of_options;
@@ -62,7 +53,7 @@ int add_option_ex (struct a_menu *menu, char *caption, int enabled)
 int current = 0;
 int display_menu (struct a_menu *menu, int x, int y, int box_flag)
 {
-	#define LINE_HEIGHT 32
+#define LINE_HEIGHT 32
 	int i, y2 = y;
 	int selected  = -1;
 

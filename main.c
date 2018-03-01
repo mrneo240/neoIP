@@ -6,11 +6,11 @@
 struct patch_data PATCHES = {
 	.patch_num = NUM_PATCHES,
 	.patches = {
-		{"Patch letter to Z",0,0xAC010BEC,'A'},
-		{"AZZZZZZZZZZZZZZZZZZZ",0,0x8c010000,'00'},
-		{"XZZZZZZZZZZZZZZZZZZZ",0,0x8c010000,'00'},
-		{"CZZZZZZZZZZZZZZZZZZZ",0,0x8c010000,'00'},
-		{"Scramble",0,0x00000000,'00'}
+		{"ZZZZZZZZZZZZZZZZZZZZZ",0,0x8c010000, 'A'},
+		{"AZZZZZZZZZZZZZZZZZZZZ",0,0x8c010000,'00'},
+		{"XZZZZZZZZZZZZZZZZZZZZ",0,0x8c010000,'00'},
+		{"CZZZZZZZZZZZZZZZZZZZZ",0,0x8c010000,'00'},
+		{"Scramble",0,0x00000000,'00'} //has to be last patch
 	}
 };
 
@@ -47,7 +47,7 @@ void main()
 
 	//Let controllers initialize and then check to see if we enter the menu
 	sleep_ms(10);
-	while(controls++<15000) {
+	while(controls++<12500) {
 		if(!update_input(CONT_X)) {
 			bDisplayMenu = 1;
 			break;
@@ -150,7 +150,7 @@ void main()
 			(*(char*)(PATCHES.patches[scramble].addr))=PATCHES.patches[scramble].patch;
 		}
 	}
-	
+
 	start2();
 
 }
