@@ -1,5 +1,5 @@
 BIN = boot1
-OBJS = startup.o main.o graphics.o video.o maple.o biossymbol.o scramble.o sleep.o crt1.o go.o disable.o warez_load.o patch.o menu.o sq.o cache.o
+OBJS = startup.o main.o graphics.o video.o maple.o biossymbol.o scramble.o sleep.o crt1.o go.o disable.o warez_load.o patch.o menu.o sq.o cache.o asic.o exception.o exception-lowlevel.o
 
 include ./Makefile.config
 

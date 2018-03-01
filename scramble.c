@@ -10,6 +10,37 @@ int buf_pos = 0;
 
 volatile int *idx; //idx[MAXCHUNK/32/*0x10000*/];  (0x10000*4bytes = 0x40000)
 
+void apply_patch_list() {
+
+	/*if(!IsoInfo->patch_addr[0]) {
+		return;
+	}*/
+
+	/*for(uint i = 0; i < sizeof(IsoInfo->patch_addr) >> 2; ++i) {
+		
+		if(*(uint32 *)IsoInfo->patch_addr[i] != IsoInfo->patch_value[i]) {
+			*(uint32 *)IsoInfo->patch_addr[i] = IsoInfo->patch_value[i];
+		}
+	}*/
+	*(char*)0xAC010BEC = 'Z';
+	*(char*)0xAC010BED = 'Z';
+	*(char*)0xAC010BEF = 'Z';
+}
+
+int memcmp(const void *s1, const void *s2, uint32_t n)
+{
+	const unsigned char *c1 = s1, *c2 = s2;
+	int d = 0;
+
+	while (n--) {
+		d = (int)*c1++ - (int)*c2++;
+		if (d)
+			break;
+	}
+
+	return d;
+}
+
 int memcpy(char *cdest, char *csrc, int n)
 {
 	int i;

@@ -6,7 +6,7 @@
 struct patch_data PATCHES = {
 	.patch_num = NUM_PATCHES,
 	.patches = {
-		{"Patch letter to Z",0,0xAC010BEC,'Z'},
+		{"Patch letter to Z",0,0xAC010BEC,'A'},
 		{"AZZZZZZZZZZZZZZZZZZZ",0,0x8c010000,'00'},
 		{"XZZZZZZZZZZZZZZZZZZZ",0,0x8c010000,'00'},
 		{"CZZZZZZZZZZZZZZZZZZZ",0,0x8c010000,'00'},
@@ -157,6 +157,10 @@ void main()
 		}
 	}
 	//setup_patching();
+	exception_init(0);
+			/* Use ASIC interrupts */
+	asic_init();
+	
 	start2();
 
 }
