@@ -5,7 +5,7 @@
 static unsigned int seed;
 volatile char *input_buf;
 volatile char *output_buf;
-volatile int data_size = 3128; //File size of 1ST_READ.BIN
+volatile int data_size = 1468208; //File size of 1ST_READ.BIN
 int buf_pos = 0;
 
 volatile int *idx; //idx[MAXCHUNK/32/*0x10000*/];  (0x10000*4bytes = 0x40000)
@@ -83,16 +83,18 @@ void fixbin(int choice)
 	input_buf 	= 0xAC010000; //start of 1ST_READ.BIN
 	output_buf	= 0xACE00000; //Temp area near end of RAM
 	idx 		= 0xACDB0000; //idx buffer pointer size 0x40000
-	choice = ((data_size+32-1)&-32);
+	volatile int data_size_aligned = ((data_size+32-1)&-32);
 
-	memset(idx,0x40000);
-	//sq_clr(idx, 0x40000);
-	memset(0xACE00000,data_size);
-	//sq_clr(0xACE00000, choice);
+	//Store queues should be faster but its a small difference.
+	//memset(idx,0x40000);
+	sq_clr(idx, 0x40000);
+	//memset(0xACE00000,data_size);
+	sq_clr(0xACE00000, data_size_aligned);
 
 	save_file(output_buf, input_buf, data_size);
 
-	memset(input_buf,data_size);
-	//sq_clr(input_buf, choice);
-	memcpy(input_buf-0x20000000,output_buf,data_size);
+	//memset(input_buf,data_size);
+	sq_clr(input_buf, data_size_aligned);
+	//memcpy(input_buf-0x20000000,output_buf,data_size);
+	sq_cpy(input_buf-0x20000000, output_buf, data_size_aligned);
 }

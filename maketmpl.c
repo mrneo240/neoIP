@@ -69,8 +69,8 @@ void main (int argc, char **argv)
 			ip_buf[0x3704+i] = rawData[i];
 		}
 		
-		int data_size_OFFSET = 0x8c00d454;
-		((int*)ip_buf)[((data_size_OFFSET-0x8c00b800)+0x3800)/4] = 1541108;
+		//int data_size_OFFSET = 0x8c00d454;
+		//((int*)ip_buf)[((data_size_OFFSET-0x8c00b800)+0x3800)/4] = 1541108;
 
         fwrite (ip_buf, sizeof (ip_buf), 1, ip_out);
 	}
