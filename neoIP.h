@@ -12,8 +12,10 @@ typedef signed long int32_t;
 typedef signed short int16_t;
 typedef signed char int8_t;
 
-
 #include "libc.h"
+
+#define NUM_PATCHES 5
+#include "patches.h"
 
 #define BUFFER_POS(X,Y) ((Y)*640+(X))
 #define RGB(R,G,B) (R << 12) | (G << 5) | (B << 0)

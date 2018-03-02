@@ -1,6 +1,5 @@
 #include "neoIP.h"
 #include "maple.h"
-#include "patches.h"
 
 #define MAX_OPTIONS 8
 
@@ -72,12 +71,14 @@ int display_menu (struct a_menu *menu, int x, int y, int box_flag)
 		if (current > 0) {
 			current --;
 		}
+		sleep_ms(50);
 	}
 
 	if(!update_input(CONT_DPAD_DOWN)) {
 		if (current < (menu -> num_of_options - 1)) {
 			current ++;
 		}
+		sleep_ms(50);
 	}
 
 	v_circle (x - 10, y+(current*LINE_HEIGHT), 8, 0, 255, 0);
@@ -87,8 +88,8 @@ int display_menu (struct a_menu *menu, int x, int y, int box_flag)
 		menu->enabled[current] = !menu->enabled[current];
 		PATCHES.patches[current].enabled = !PATCHES.patches[current].enabled;
 		selected = current+1;
+		sleep_ms(50);
 	}
-	sleep_ms(40);
 
 	return selected;
 }

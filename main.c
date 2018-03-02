@@ -1,16 +1,26 @@
 #include "neoIP.h"
 #include "maple.h"
 #include "graphics.h"
-#include "patches.h"
 
+/*struct patch_data PATCHES = {
+	.patch_num = NUM_PATCHES,
+	.patches = {
+		{"ZZZZZZZZZZZZZZZZZZZZZ",0,1,0x8c010000, 'A'},
+		{"AZZZZZZZZZZZZZZZZZZZZ",0,1,0x8c010000,'00'},
+		{"XZZZZZZZZZZZZZZZZZZZZ",0,1,0x8c010000,'00'},
+		{"CZZZZZZZZZZZZZZZZZZZZ",0,1,0x8c010000,'00'},
+		{"Scramble",0,1,0x00000000,'00'} //has to be last patch
+	}
+};*/
+//2k2 Baseball Patches
 struct patch_data PATCHES = {
 	.patch_num = NUM_PATCHES,
 	.patches = {
-		{"ZZZZZZZZZZZZZZZZZZZZZ",0,0x8c010000, 'A'},
-		{"AZZZZZZZZZZZZZZZZZZZZ",0,0x8c010000,'00'},
-		{"XZZZZZZZZZZZZZZZZZZZZ",0,0x8c010000,'00'},
-		{"CZZZZZZZZZZZZZZZZZZZZ",0,0x8c010000,'00'},
-		{"Scramble",0,0x00000000,'00'} //has to be last patch
+		{"Widescreen 16:9",0,1,0x8c014E92, 0x70},
+		{"Widescreen 21:9",0,1,0x8c014E92, 0x43},
+		{"Protection Fix",1,4,0x8c010000,0x09000900},
+		{"CZZZZZZZZZZZZZZZZZZZZ",0,0,0x0,'00'},
+		{"Scramble",1,0,0x00000000,'00'} //has to be last patch
 	}
 };
 
@@ -70,10 +80,13 @@ void main()
 
 		struct a_menu *my_menu = new_menu ("Cheats and Patches");
 		for(flashing=0; flashing<PATCHES.patch_num-1; flashing++) {
-			add_option(my_menu, PATCHES.patches[flashing].text);
+			if(PATCHES.patches[flashing].addr != 0){
+				//add_option(my_menu, PATCHES.patches[flashing].text);
+				add_option_ex(my_menu, PATCHES.patches[flashing].text,PATCHES.patches[flashing].enabled);
+			}
 		}
 		add_option_ex(my_menu, PATCHES.patches[NUM_PATCHES-1].text,PATCHES.patches[NUM_PATCHES-1].enabled);
-
+		
 
 		do {
 			controls = update_input(CONT_START);
@@ -147,7 +160,17 @@ void main()
 	//just resuing the same variable because its easier
 	for(scramble=0; scramble<PATCHES.patch_num; scramble++) {
 		if((PATCHES.patches[scramble].enabled == 1) && (PATCHES.patches[scramble].addr != 0)) {
-			(*(char*)(PATCHES.patches[scramble].addr))=PATCHES.patches[scramble].patch;
+			switch(PATCHES.patches[scramble].type){
+				case 1/*char*/:
+					(*(uint8_t*)(PATCHES.patches[scramble].addr))= PATCHES.patches[scramble].patch & 0x000000ff;
+					break;
+				case 2/*short*/:
+					(*(uint16_t*)(PATCHES.patches[scramble].addr))= PATCHES.patches[scramble].patch & 0x0000ffff;
+					break;
+				case 4/*int*/:
+					(*(uint32_t*)(PATCHES.patches[scramble].addr))= PATCHES.patches[scramble].patch;
+					break;
+			}
 		}
 	}
 

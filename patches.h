@@ -3,13 +3,12 @@
 
 #include "neoIP.h"
 
-#define NUM_PATCHES 5
-
 struct patch_def {
 	const char text[22];
 	char enabled;
+	char type; //1=char, 2=short, 4=int
 	uint32_t addr;
-	char patch;
+	uint32_t patch;
 };
 
 struct patch_data {

@@ -29,7 +29,7 @@ clean:
 	-rm -f *.o *.elf 1ST_READ.BIN *.bck $(EXTRA_CLEAN)
 
 reallyclean: clean
-	-rm -f *.bin *.srec
+	-rm -f $(BIN).bin rm IP.BIN.HAK
 
 force:
 	-rm -f $(BIN).elf

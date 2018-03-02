@@ -64,43 +64,20 @@ p2replace:
 
 ResetGD:
     sts.l   pr, @-r15
-
-    mova    GDreset, r0
-    mov.l   @r0, r4
-    mova    GDresetval, r0
-    mov.l   @r0, r5
-
-    mov.l    r5, @r4
-
-    mova    Aflushstart, r0
-    mov.l   @r0, r4
     mova    Aflushend, r0
-    mov.l   @r0, r5
-
-aflushlp:
-    mov.l   @r4, r0
-    add     #4, r4
-
-    cmp/eq  r4, r5
-    bf      aflushlp
-
+    mov.l    @r0,r0
+    mov.b    @r0,r0
+    
     bsr     GdInitSystem
     nop
 
     lds.l   @r15+, pr
     rts
     nop
-
+    
     .align  4
-
-GDreset:
-    .long   0xa05f74e4
-GDresetval:
-    .long   0x1fffff
-Aflushstart:
-    .long   0xa0000000
 Aflushend:
-    .long   0xa0200000
+    .long   0xa01fffff
 
 !r4, r5, r6 args.
     .align  4

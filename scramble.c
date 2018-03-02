@@ -85,14 +85,14 @@ void fixbin(int choice)
 	idx 		= 0xACDB0000; //idx buffer pointer size 0x40000
 	choice = ((data_size+32-1)&-32);
 
-	//memset(idx,0x40000);
-	sq_clr(idx, 0x40000);
-	//memset(0xACE00000,data_size);
-	sq_clr(0xACE00000, choice);
+	memset(idx,0x40000);
+	//sq_clr(idx, 0x40000);
+	memset(0xACE00000,data_size);
+	//sq_clr(0xACE00000, choice);
 
 	save_file(output_buf, input_buf, data_size);
 
-	//memset(input_buf,data_size);
-	sq_clr(input_buf, choice);
+	memset(input_buf,data_size);
+	//sq_clr(input_buf, choice);
 	memcpy(input_buf-0x20000000,output_buf,data_size);
 }
