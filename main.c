@@ -19,8 +19,8 @@ struct patch_data PATCHES = {
 		{"Widescreen 16:9",0,1,0x8c014E92, 0x70},
 		{"Widescreen 21:9",0,1,0x8c014E92, 0x43},
 		{"Protection Fix",0,4,0x8c010000,0x09000900},
-		{"CZZZZZZZZZZZZZZZZZZZZ",0,0,0x0,'00'},
-		{"Scramble",1,0,0x00000000,'00'} //has to be last patch
+		{"ZZZZZZZZZZZZZZZZZZZZZ",0,0,0x0,'00'},
+		{"Scramble",0,0,0x00000000,'00'} //has to be last patch
 	}
 };
 

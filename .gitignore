@@ -43,9 +43,10 @@ research
 *.BIN*
 bin2c
 maketmpl
+neoIP
 *.elf
 *.map
-neoIP
 notes.txt
 *.xc
 boot1.h
+Release
