@@ -14,13 +14,11 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 CPPFLAGS ?= $(INC_FLAGS) -MMD -MP
 
-IP:
-	./neoIP-tool/maketmpl bin/IP.BIN build/boot1 bin/IP.BIN.HAK ;echo ;
+
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 	$(CC) $(OBJS) -o $@ -Xlinker -Map=MAP_bin1.map $(DREAM_CFLAGS) $(DREAM_LDFLAGS)
 	sh-elf-objcopy -R .stack -O binary $@ $(basename $@)
-
 	
 # assembly
 $(BUILD_DIR)/%.s.o: %.s
@@ -37,6 +35,8 @@ $(BUILD_DIR)/%.c.o: %.c
 #	$(MKDIR_P) $(dir $@)
 #	$(CXX) -fomit-frame-pointer $(DREAM_CFLAGS) $(DREAM_LDFLAGS) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
+IP:
+	./neoIP-tool/maketmpl bin/IP.BIN build/boot1 bin/IP.BIN.HAK ;echo ;
 
 .PHONY: clean
 
