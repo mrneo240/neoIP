@@ -1,37 +1,48 @@
-BIN = boot1
-OBJS = startup.o libc.o main.o graphics.o video.o maple.o biossymbol.o scramble.o sleep.o crt1.o go.o disable.o warez_load.o menu.o sq.o cache.o
+TARGET_EXEC ?= boot1.elf
+
+BUILD_DIR ?= ./build
+SRC_DIRS ?= ./src
 
 include ./Makefile.config
 
-INCS=
-LIBS= -lgcc
+SRCS := $(shell find $(SRC_DIRS) -name *.cpp -or -name *.c -or -name *.s)
+OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
+DEPS := $(OBJS:.o=.d)
 
-all: $(BIN).bin
-	ls -l *.bin
+INC_DIRS := $(shell find $(SRC_DIRS) -type d)
+INC_FLAGS := $(addprefix -I,$(INC_DIRS))
+
+CPPFLAGS ?= $(INC_FLAGS) -MMD -MP
 
 IP:
-	./maketmpl IP.BIN boot1.bin IP.BIN.HAK ;echo ;
+	./neoIP-tool/maketmpl bin/IP.BIN build/boot1 bin/IP.BIN.HAK ;echo ;
 
-%.bin: %.elf
-	strip-bin $(basename $<) $@
+$(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
+	$(CC) $(OBJS) -o $@ -Xlinker -Map=MAP_bin1.map $(DREAM_CFLAGS) $(DREAM_LDFLAGS)
+	sh-elf-objcopy -R .stack -O binary $@ $(basename $@)
 
-$(BIN).elf: $(OBJS)
-	$(CC) -Xlinker -Map=MAP_bin1.map $(DREAM_CFLAGS) $(DREAM_LDFLAGS) -o $@ $(OBJS)
 	
-%.o: %.c 
-	$(CC) -fomit-frame-pointer $(DREAM_CFLAGS) $(DREAM_LDFLAGS)  -c $< -o $@
-%.o: %.S
-	$(CC) -fomit-frame-pointer -Wa,-little $(DREAM_CFLAGS) $(DREAM_LDFLAGS)  -c $< -o $@
-%.o: %.s
-	$(AS) -little   $< -o $@
-	
+# assembly
+$(BUILD_DIR)/%.s.o: %.s
+	$(MKDIR_P) $(dir $@)
+	$(AS) -little -c $< -o $@
+
+# c source
+$(BUILD_DIR)/%.c.o: %.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) -fomit-frame-pointer $(DREAM_CFLAGS) $(DREAM_LDFLAGS) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
+# c++ source
+#$(BUILD_DIR)/%.cpp.o: %.cpp
+#	$(MKDIR_P) $(dir $@)
+#	$(CXX) -fomit-frame-pointer $(DREAM_CFLAGS) $(DREAM_LDFLAGS) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+
+.PHONY: clean
+
 clean:
-	-rm -f *.o *.elf 1ST_READ.BIN *.bck $(EXTRA_CLEAN)
+	$(RM) -r $(BUILD_DIR)
 
-reallyclean: clean
-	-rm -f $(BIN).bin rm IP.BIN.HAK
+-include $(DEPS)
 
-force:
-	-rm -f $(BIN).elf
-	make
-
+MKDIR_P ?= mkdir -p
