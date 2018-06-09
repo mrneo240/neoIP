@@ -29,5 +29,6 @@ extern uint32_t *videobase; //changed to use the declaration in video.s
 
 //input
 extern uint16_t update_input(int btn);
+//add here
 
 #endif
