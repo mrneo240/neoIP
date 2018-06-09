@@ -1,11 +1,13 @@
 #include "neoIP.h"
+#include "addons/sq.h"
 
 #define MAXCHUNK (2048*1024)
 
 static unsigned int seed;
-volatile char *input_buf;
-volatile char *output_buf;
+unsigned char *input_buf;
+unsigned char *output_buf;
 volatile int data_size = 1468208; //File size of 1ST_READ.BIN
+volatile int *data_size_V;
 int buf_pos = 0;
 
 volatile int *idx; //idx[MAXCHUNK/32/*0x10000*/];  (0x10000*4bytes = 0x40000)
@@ -80,18 +82,19 @@ void save_file(unsigned char *dst, unsigned char *src, uint32_t filesz)
 void fixbin(int choice)
 {
 	//data_size =  303920; //File size of 1ST_READ.BIN
-	input_buf 	= 0xAC010000; //start of 1ST_READ.BIN
-	output_buf	= 0xACE00000; //Temp area near end of RAM
-	idx 		= 0xACDB0000; //idx buffer pointer size 0x40000
-	volatile int data_size_aligned = ((data_size+32-1)&-32);
+	input_buf 	= (unsigned char*)(0xAC010000); //start of 1ST_READ.BIN
+	output_buf	= (unsigned char*)(0xACE00000); //Temp area near end of RAM
+	idx 		= (int*)(0xACDB0000); //idx buffer pointer size 0x40000
+	data_size_V = &data_size;
+	volatile int data_size_aligned = ((*data_size_V+32-1)&-32);
 
 	//Store queues should be faster but its a small difference.
 	//memset(idx,0x40000);
-	sq_clr(idx, 0x40000);
+	sq_clr((void *)idx, 0x40000);
 	//memset(0xACE00000,data_size);
-	sq_clr(0xACE00000, data_size_aligned);
+	sq_clr((void *)0xACE00000, data_size_aligned);
 
-	save_file(output_buf, input_buf, data_size);
+	save_file(output_buf, input_buf, *data_size_V);
 
 	//memset(input_buf,data_size);
 	sq_clr(input_buf, data_size_aligned);

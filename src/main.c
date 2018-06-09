@@ -16,11 +16,11 @@
 struct patch_data PATCHES = {
 	.patch_num = NUM_PATCHES,
 	.patches = {
-		{"Widescreen 16:9",0,1,0x8c014E92, 0x70},
-		{"Widescreen 21:9",0,1,0x8c014E92, 0x43},
-		{"Protection Fix",0,4,0x8c010000,0x09000900},
-		{"ZZZZZZZZZZZZZZZZZZZZZ",0,0,0x0,'00'},
-		{"Scramble",0,0,0x00000000,'00'} //has to be last patch
+		{"ZZZZZZZZZZZZZZZZZZZZZ",0,1,0x0, 'A'},
+		{"AZZZZZZZZZZZZZZZZZZZZ",0,1,0x0,'00'},
+		{"XZZZZZZZZZZZZZZZZZZZZ",0,1,0x0,'00'},
+		{"CZZZZZZZZZZZZZZZZZZZZ",0,1,0x0,'00'},
+		{"Scramble",1,1,0x00000000,'00'} //has to be last patch
 	}
 };
 
@@ -158,21 +158,21 @@ void main()
 	}
 
 	//just resuing the same variable because its easier
-	for(scramble=0; scramble<PATCHES.patch_num; scramble++) {
+	/*for(scramble=0; scramble<PATCHES.patch_num; scramble++) {
 		if((PATCHES.patches[scramble].enabled == 1) && (PATCHES.patches[scramble].addr != 0)) {
 			switch(PATCHES.patches[scramble].type){
-				case 1/*char*/:
+				case 1: //char
 					(*(uint8_t*)(PATCHES.patches[scramble].addr))= PATCHES.patches[scramble].patch & 0x000000ff;
 					break;
-				case 2/*short*/:
+				case 2: //short
 					(*(uint16_t*)(PATCHES.patches[scramble].addr))= PATCHES.patches[scramble].patch & 0x0000ffff;
 					break;
-				case 4/*int*/:
+				case 4: //int
 					(*(uint32_t*)(PATCHES.patches[scramble].addr))= PATCHES.patches[scramble].patch;
 					break;
 			}
 		}
-	}
+	}*/
 
 	start2();
 
