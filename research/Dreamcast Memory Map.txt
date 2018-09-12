@@ -1,0 +1,208 @@
+dc memory map by anarko - Work In Progress
+------------------------------------------
+
+
+0x0000 0000 - 0x03FF FFFF - Area 0, System ROM:
+    0x0000 0000 - 0x001F FFFF Boot ROM (BIOS) (2MB)
+    0x0020 0000 - 0x003F FFFF Flash ROM (256KB)
+
+
+0x0400 0000 - 0x07FF FFFF - Area 1, Video RAM (8MB)
+0x0800 0000 - 0x0BFF FFFF - Area 2, ??
+
+0x0C00 0000 - 0x0FFF FFFF - Area 3, System RAM (16MB), area is 64MB.. ehh:
+    0x0C00 0000 - 0x0C00 7FFF - Syscall vectors and such stuff
+    0x0C00 8000 - 0x0C00 FFFF - IP.BIN is loaded here (32KB)
+    0x0C01 0000 - 0x0C0? ???? - 1ST_READ.BIN is loaded here from IP.BIN
+
+
+0x1000 0000 - 0x13FF FFFF - Area 4, PowerVR:
+    0x1000 0000 - 0x107F FFFF Tile accelerator
+    0x1080 0000 - 0x11FF FFFF Texture mem (write only)
+
+
+0x1400 0000 - 0x17FF FFFF - Area 5, G2/Expansion (modem) port, 1-4 bytes/access
+0x1800 0000 - 0x1BFF FFFF - Area 6, ??
+0x1C00 0000 - 0x1FFF FFFF - Area 7, SH-4 control registers:
+    for 0x1F00 0000 - 0x1FFF FFFF, see [0xFF00 0000 - 0xFFFF FFFF]
+
+
+
+*** SYSCALLS ***
+0x8C00 00B4 - b4 syscall vector
+0x8C00 00BC - GD-ROM syscall vector
+0x8C00 00E0 - "system" syscall vector
+
+
+0xA000 0000 Reset vector
+
+0xA05F 0000 - 0xA05F ???? - Hardware registers
+
+
+0xA05F 8000     PowerVR Register (Video):
+    0xA05F 8008 ?
+    0xA05F 8040 Border color
+    0xA05F 8044 ?
+    0xA05F 8050 Screen base address
+    0xA05F 8054 "Video(screen) base address for short fields should be offset by one line"
+    0xA05F 805C Scanline offset, screen height & width
+    0xA05F 80D0 V-Sync & H-Sync polarity, interlace & video output enable
+    0xA05F 80D4 Start & end display border Horizontal
+    0xA05F 80D8 Horizontal & Vertical counter
+    0xA05F 80DC Start & end display border Vertical
+    0xA05F 80E0 V-Sync & H-Sync width
+    0xA05F 80E4 ?
+    0xA05F 80E8 ?
+    0xA05F 80EC Horizontal position screen
+    0xA05F 80F0 Start Bild? Vertical
+
+
+0xA070 0000     SPU Registers:
+    0xA070 2C00 RGB/Composite mode?
+
+
+0xA080 0000 - 0xa09f FFFF - Sound RAM (2MB)
+
+
+0xA100 0000     Parallel Port
+0xA200 0000     CD-ROM Port 
+
+
+0xA500 0000 - 0xA57F FFFF - Non-cached mirror of VRAM
+
+
+0xE000 0000 - 0xE3FF FFFC - Store Queue (SQ) area
+0xE400 0000 - 0xEFFF FFFF - RESERVED AREA
+0xF000 0000 - 0xF0FF FFFF - Instruction cache address array
+0xF100 0000 - 0xF1FF FFFF - Instruction cache data array
+0xF200 0000 - 0xF2FF FFFF - Instruction TLB (ITLB) address array
+0xF300 0000 - 0xF3FF FFFF - Instruction TLB (ITLB) data array 1,2
+0xF400 0000 - 0xF4FF FFFF - Operand cache address array
+0xF500 0000 - 0xF5FF FFFF - Operand cache data array
+0xF600 0000 - 0xF6FF FFFF - Unified TLB (UTLB) address array
+0xF700 0000 - 0xF7FF FFFF - Unified TLB (UTLB) data array 1,2
+0xF800 0000 - 0xFEFF FFFF - RESERVED AREA
+
+
+0xFF00 0000 - 0xFFFF FFFF - Control register area:
+    0xFF00 0000 PTEH - Page table entry high register [R/W] 32bit
+    0xFF00 0004 PTEL - Page table entry low register [R/W] 32bit
+    0xFF00 0008 TTB - Translation table base register [R/W] 32bit
+    0xFF00 000C TEA - TLB exception address register [R/W] 32bit
+    0xFF00 0010 MMUCR - MMU control register [R/W] 32bit
+    0xFF00 0014 BASRA - Break ASID register A [R/W] 8bit
+    0xFF00 0018 BASRB - Break ASID register B [R/W] 8bit
+    0xFF00 001C CCR - Cache control register [R/W] 32bit
+    0xFF00 0020 TRA - TRAPA exception register [R/W] 32bit
+    0xFF00 0024 EXPEVT - Exception event code [R/W] 32bit
+    0xFF00 0028 INTEVT - Interrupt event code [R/W] 32bit
+
+    0xFF00 0034 PTEA - Page table entry assistance register [R/W] 32bit
+    0xFF00 0038 QACR0 - Queue address control register 0 [R/W] 32bit
+    0xFF00 003C QACR1 - Queue address control register 1 [R/W] 32bit
+
+    0xFF20 0000 BARA - Break address register A [R/W] 32bit
+    0xFF20 0004 BAMRA - Break address mask register A [R/W] 8bit
+    0xFF20 0008 BBRA - Break bus cycle register A [R/W] 16bit
+    0xFF20 000C BARB - Break address register B [R/W] 32bit
+    0xFF20 0010 BAMRB - Break address mask register B [R/W] 8bit
+    0xFF20 0014 BBRB - Break bus cycle register B [R/W] 16bit
+    0xFF20 0018 BDRB - Break data register B [R/W] 32bit
+    0xFF20 001C BDMRB - Break data mask register B [R/W] 32bit
+    0xFF20 0020 BRCR - Break control register [R/W] 16bit
+
+
+    0xFF80 0000 BCR1 - Bus control register 1 [R/W] 32bit
+    0xFF80 0004 BCR2 - Bus control register 2 [R/W] 16bit
+    0xFF80 0008 WCR1 - Wait state control register 1 [R/W] 32bit
+    0xFF80 000C WCR2 - Wait state control register 2 [R/W] 32bit
+    0xFF80 0010 WCR3 - Wait state control register 3 [R/W] 32bit
+
+    0xFF80 0014 MCR - Memory control register [R/W] 32bit
+    0xFF80 0018 PCR - PCMCIA control register [R/W] 16bit
+    0xFF80 001C RTCSR - Refresh timer control/status register [R/W] 16bit
+    0xFF80 0020 RTCNT - Refresh timer counter [R/W] 16bit
+    0xFF80 0024 RTCOR - Refresh time constant counter [R/W] 16bit
+    0xFF80 0028 RFCR - Refresh count register [R/W] 16bit
+    0xFF80 002C PCTRA - Port control register A [R/W] 32bit
+    0xFF80 0030 PDTRA - Port data register A [R/W] 16bit
+
+    0xFF80 0040 PCTRB - Port control register B [R/W] 32bit
+    0xFF80 0044 PDTRB - Port data register B [R/W] 16bit
+    0xFF80 0048 GPIOIC - GPIO interrupt control register [R/W] 16bit
+
+    0xFFA0 0000 SAR0 - DMA source address register 0 [R/W] 32bit
+    0xFFA0 0004 DAR0 - DMA destination address register 0 [R/W] 32bit
+    0xFFA0 0008 DMATCR0 - DMA transfer count register 0 [R/W] 32bit
+    0xFFA0 000C CHCR0 - DMA channel control register 0 [R/W] 32bit
+    0xFFA0 0010 SAR1 - DMA source address register 1 [R/W] 32bit
+    0xFFA0 0014 DAR1 - DMA destination address register 1 [R/W] 32bit
+    0xFFA0 0018 DMATCR1 - DMA transfer count register 1 [R/W] 32bit
+    0xFFA0 001C CHCR1 - DMA channel control register 1 [R/W] 32bit
+    0xFFA0 0020 SAR2 - DMA source address register 2 [R/W] 32bit
+    0xFFA0 0024 DAR2 - DMA destination address register 2 [R/W] 32bit
+    0xFFA0 0028 DMATCR2 - DMA transfer count register 2 [R/W] 32bit
+    0xFFA0 002C CHCR2 - DMA channel control register 2 [R/W] 32bit
+    0xFFA0 0030 SAR3 - DMA source address register 3 [R/W] 32bit
+    0xFFA0 0034 DAR3 - DMA destination address register 3 [R/W] 32bit
+    0xFFA0 0038 DMATCR3 - DMA transfer count register 3 [R/W] 32bit
+    0xFFA0 003C CHCR3 - DMA channel control register 3 [R/W] 32bit
+    0xFFA0 0040 DMAOR - DMA operation register [R/W] 32bit
+    
+
+
+    0xFFC0 0000 FRQCR - Frequency control register [R/W] 16bit
+
+    0xFFC0 0008 WTCNT - Watchdog timer counter [R8/W16]
+    0xFFC0 000C WTCSR - Watchdog timer control/status register [R8/W16]
+
+    0xFFC8 0000 R64CNT - 64Hz counter [R8]
+    0xFFC8 0004 RSECCNT - Second counter [R/W] 8bit
+    0xFFC8 0008 RMINCNT - Minute counter [R/W] 8bit
+    0xFFC8 000C RHRCNT - Hour counter [R/W] 8bit
+    0xFFC8 0010 RWKCNT - Day-of-week counter [R/W] 8bit
+    0xFFC8 0014 RDAYCNT - Day counter [R/W] 8bit
+    0xFFC8 0018 RMONCNT - Month counter [R/W] 8bit
+    0xFFC8 001C RYRCNT - Year counter [R/W] 16bit
+    0xFFC8 0020 RSECAR - Second alarm register [R/W] 8bit
+    0xFFC8 0024 RMINAR - Minute alarm register [R/W] 8bit
+    0xFFC8 0028 RHRAR - Hour alarm register [R/W] 8bit
+    0xFFC8 002C RWKAR - Day-of-week alarm register [R/W] 8bit
+    0xFFC8 0030 RDAYAR - Day alarm register [R/W] 8bit
+    0xFFC8 0034 RMONAR - Month alarm register [R/W] 8bit
+    0xFFC8 0038 RCR1 - RTC control register 1 [R/W] 8bit
+    0xFFC8 003C RCR2 - RTC control register 2 [R/W] 8bit
+
+    0xFFD0 0000 ICR - Interrupt control register [R/W] 16bit
+    0xFFD0 0004 IPRA - Interrupt priority register A [R/W] 16bit
+    0xFFD0 0008 IPRB - Interrupt priority register B [R/W] 16bit
+    0xFFD0 000C IPRC - Interrupt priority register C [R/W] 16bit
+
+    0xFFD8 0000 TOCR - Timer output control register [R/W] 8bit
+    0xFFD8 0004 TSTR - Timer start register [R/W] 8bit
+    0xFFD8 0008 TCOR0 - Timer constant register 0 [R/W] 32bit
+    0xFFD8 000C TCNT0 - Timer counter 0 [R/W] 32bit
+    0xFFD8 0010 TCR0 - Timer control register 0 [R/W] 16bit
+    0xFFD8 0014 TCOR1 - Timer constant register 1 [R/W] 32bit
+    0xFFD8 0018 TCNT1 - Timer counter 1 [R/W] 32bit
+    0xFFD8 001C TCR1 - Timer control register 1 [R/W] 16bit
+    0xFFD8 0020 TCOR2 - Timer constant register 2 [R/W] 32bit
+    0xFFD8 0024 TCNT2 - Timer counter 2 [R/W] 32bit
+    0xFFD8 0028 TCR2 - Timer control register 2 [R/W] 16bit
+    0xFFD8 002C TCPR2 Input capture register  [R/W] 32bit
+
+
+    0xFFE0 0000 SCSMR1 - Serial mode register [R/W] 8bit
+    0xFFE0 0004 SCBRR1 - Bit rate register [R/W] 8bit
+    0xFFE0 0008 SCSCR1 - Serial control register [R/W] 8bit
+    0xFFE0 000C SCTDR1 - Transmit data register [R/W] 8bit
+    0xFFE0 0010 SCSSR1 - Serial status register [R/W] 8bit
+    0xFFE0 0014 SCRDR1 - Recieve data register [R] 8bit
+    0xFFE0 001C SCSPTR1 - Serial port register [R/W] 8bit
+
+    0xFFE8 0000 - 0xFFE8 0024 = Serial communication interface w/ FIFO in hw.pdf
+    0xFFE8 0020 SCSPTR2 - Serial port register [R/W] 16bit
+
+    0xFFF0 0000 - 0xFFF0 000A = Hitatchi user debug interface in hw.pdf
+
+

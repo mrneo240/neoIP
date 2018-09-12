@@ -1,0 +1,1262 @@
+<!DOCTYPE html><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<base href="https://sourceforge.net/p/sylverant/pso_patcher/ci/766b02049b48c1d5e89e431672c716be3571422f/tree/patcher/patcher.c?diff="><style type="text/css">body { margin-left:0;margin-right:0;margin-top:0; }#google-cache-hdr {background:#f5f5f5 !important;font:13px arial,sans-serif !important;text-align:left !important;color:#202020 !important;border:0 !important;margin:0 !important;border-bottom:1px solid #cecece !important;line-height:16px !important ;padding:16px 28px 24px 28px !important;}#google-cache-hdr * {display:inline !important;font:inherit !important;text-align:inherit !important;color:inherit !important;line-height:inherit !important;background:none !important;border:0 !important;margin:0 !important;padding:0 !important;letter-spacing:0 !important;}#google-cache-hdr a {text-decoration:none !important;color:#1a0dab !important;}#google-cache-hdr a:hover { text-decoration:underline !important; }#google-cache-hdr a:visited { color:#609 !important; }#google-cache-hdr div { display:block !important;margin-top:4px !important; }#google-cache-hdr b {font-weight:bold !important;display:inline-block !important;direction:ltr !important;}</style><div id="google-cache-hdr"  dir=ltr><div>This is Google&#39;s cache of <a href="https://sourceforge.net/p/sylverant/pso_patcher/ci/766b02049b48c1d5e89e431672c716be3571422f/tree/patcher/patcher.c?diff=" dir="ltr">https://sourceforge.net/p/sylverant/pso_patcher/ci/766b02049b48c1d5e89e431672c716be3571422f/tree/patcher/patcher.c?diff=</a>. It is a snapshot of the page as it appeared on Jan 1, 2018 16:00:02 GMT. </div><div>The <a href="https://sourceforge.net/p/sylverant/pso_patcher/ci/766b02049b48c1d5e89e431672c716be3571422f/tree/patcher/patcher.c?diff=" dir="ltr">current page</a> could have changed in the meantime. <a href="http://support.google.com/websearch/bin/answer.py?hl=en&amp;p=cached&amp;answer=1687222">Learn more</a></div><div></div><div><span style="display:inline-block !important;margin-top:8px !important;margin-right:104px !important;white-space:nowrap !important;"><span style="margin-right:28px !important;"><span style="font-weight:bold !important;">Full version</span></span><span style="margin-right:28px !important;"><a href="http://webcache.googleusercontent.com/search?q=cache:7XeoLLHSr18J:https://sourceforge.net/p/sylverant/pso_patcher/ci/766b02049b48c1d5e89e431672c716be3571422f/tree/patcher/patcher.c%3Fdiff%3D&amp;num=1&amp;hl=en&amp;gl=us&strip=1&vwsrc=0">Text-only version</a></span><span style="margin-right:28px !important;"><a href="http://webcache.googleusercontent.com/search?q=cache:7XeoLLHSr18J:https://sourceforge.net/p/sylverant/pso_patcher/ci/766b02049b48c1d5e89e431672c716be3571422f/tree/patcher/patcher.c%3Fdiff%3D&amp;num=1&amp;hl=en&amp;gl=us&strip=0&vwsrc=1">View source</a></span></span><span style="display:inline-block !important;margin-top:8px !important;color:#717171 !important;">Tip: To quickly find your search term on this page, press <b>Ctrl+F</b> or <b>⌘-F</b> (Mac) and use the find bar.</span></div></div><div style="position:relative;">
+<!DOCTYPE html>
+<!-- Server: sfs-forge-4 -->
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--[if lt IE 7 ]> <html lang="en" class="no-js ie6"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]>-->
+<html lang="en" class="no-js"> <!--<![endif]-->
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+    <title>
+  Sylverant / pso_patcher / Diff of /patcher/patcher.c
+</title>
+    
+
+
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView', document.title, {
+        dimension1: 'sylverant',
+        dimension2: 'git'
+  }]);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.slashdotmedia.com/";
+    _paq.push(['setTrackerUrl', u+'sf.php']);
+    _paq.push(['setSiteId', 39]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'sf.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<noscript><p><img src="//analytics.slashdotmedia.com/sf.php?idsite=39" style="border:0;" alt="" /></p></noscript>
+
+
+<meta id="project_name" name="project_name" content='sylverant' />
+<!--[if lt IE 7 ]>
+  <script src="https://a.fsdn.com/allura/nf/1513797982/_ew_/theme/sftheme/js/sftheme/vendor/dd_belatedpng.js"></script>
+  <script> DD_belatedPNG.fix('img, .png_bg'); //fix any <img> or .png_bg background-images </script>
+<![endif]-->
+<link href='//fonts.googleapis.com/css?family=Ubuntu:regular' rel='stylesheet' type='text/css'>
+
+<script>
+if (!window.SF) { window.SF = {}; }
+SF.sandiego = false;
+SF.sandiego_chrome = false;
+</script>
+    
+        <!-- ew:head_css -->
+
+    
+        <link rel="stylesheet"
+                type="text/css"
+                href="https://a.fsdn.com/allura/nf/1513797982/_ew_/_slim/css?href=allura%2Fcss%2Fforge%2Fhilite.css%3Ballura%2Fcss%2Fforge%2Fdiff.css%3Ballura%2Fcss%2Fforge%2Ftooltipster.css"
+                >
+    
+        <link rel="stylesheet"
+                type="text/css"
+                href="https://a.fsdn.com/allura/nf/1513797982/_ew_/allura/css/font-awesome.min.css"
+                >
+    
+        <link rel="stylesheet"
+                type="text/css"
+                href="https://a.fsdn.com/allura/nf/1513797982/_ew_/theme/sftheme/css/forge.css"
+                >
+    
+        
+<!-- /ew:head_css -->
+
+    
+    
+        <!-- ew:head_js -->
+
+    
+        <script type="text/javascript" src="https://a.fsdn.com/allura/nf/1513797982/_ew_/_slim/js?href=allura%2Fjs%2Fjquery-base.js%3Btheme%2Fsftheme%2Fjs%2Fsftheme%2Fvendor%2Fmodernizr.3.3.1.custom.js%3Btheme%2Fsftheme%2Fjs%2Fsftheme%2Fshared_head.js%3Btheme%2Fsftheme%2Fjs%2Fsftheme%2Ftypescript%2Fcompliance.js"></script>
+    
+        
+<!-- /ew:head_js -->
+
+    
+
+    
+        <style type="text/css">
+            #page-body.project---init-- #top_nav { display: none; }
+
+#page-body.project---init-- #nav_menu_holder { display: none; margin-bottom: 0; }
+
+#page-body.project---init-- #content_base {margin-top: 0; }
+        </style>
+    
+    
+  
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/p/sylverant/pso_patcher/feed.rss"/>
+    <link rel="alternate" type="application/atom+xml" title="Atom" href="/p/sylverant/pso_patcher/feed.atom"/>
+    <style type="text/css">
+        #access_urls .btn-set {
+            
+            min-width: 14em;
+        }
+    </style>
+
+  <style type="text/css">
+    .clip h3 {margin-bottom: 0;}
+  </style>
+
+    <style>.XatASVcnsxmdoGKoGMhkXWtfDQ {
+        display: none
+    }</style>
+
+    
+    
+    
+    
+
+
+<script type="text/javascript">
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    function _add_tracking(prefix, tracking_id) {
+        ga('create', tracking_id, {cookieDomain: 'auto', 'name': prefix,'sampleRate': 9});
+        
+        ga(prefix+'.set', 'dimension9', 'sylverant');
+        ga(prefix+'.set', 'dimension10', 'git');
+        
+        ga(prefix+'.set', 'dimension13', 'Logged Out');
+        ga(prefix+'.send', 'pageview');
+    }
+      _add_tracking('sfnt1', 'UA-32013-6');
+      _add_tracking('sfnt2', 'UA-36130941-1');
+    
+</script>
+</head>
+
+<body class="body_class
+
+" id="forge">
+
+    
+        <!-- ew:body_top_js -->
+
+    
+        
+<!-- /ew:body_top_js -->
+
+    
+
+
+
+
+<header id="site-header">
+    <div class="wrapper">
+        <a href="/" class="logo">
+            <span>SourceForge</span>
+        </a>
+        
+        <form method="get" action="/directory/">
+            <input type="text" id="words" name="q" placeholder="Search">
+        </form>
+        
+        <!--Switch to {language}-->
+        <nav id="nav-site">
+            <a href="/directory/" title="Browse our software.">Browse</a>
+            <a href="/directory/enterprise" title="Browse our Enterprise software.">Enterprise</a>
+            <a href="/blog/" title="Read the latest news from the SF HQ.">Blog</a>
+            <a href="/articles/" title="Read the latest industry news about products and updates from leading cloud, network, and developer tool service providers">Articles</a>
+            <a href="//deals.sourceforge.net/?utm_source=sourceforge&amp;utm_medium=navbar&amp;utm_campaign=homepage" title="Discover and Save on the Best Gear, Gadgets, and Software" class="featured-link" target="_blank">Deals</a>
+            <a href="/support" title="Contact us for help and feedback.">Help</a>
+            <a href="/create"  class="featured-link blue"  style="" title="Create and publish Open Source software for free.">Create</a>
+        </nav>
+        <nav id="nav-account">
+            
+              <div class="logged_out">
+                <a href="/auth/">Log In</a>
+                <span>or</span>
+                <a href="https://sourceforge.net/user/registration/">Join</a>
+              </div>
+            
+        </nav>
+    </div>
+</header>
+<header id="site-sec-header">
+    <div class="wrapper">
+        <nav id="nav-hubs">
+            <h4>Solution Centers</h4>
+            
+        </nav>
+        <nav id="nav-collateral">
+            <a href="https://library.slashdotmedia.com/">Resources</a>
+            <a href="/user/newsletters?source=sfnet_header">Newsletters</a>
+            <a href="/cloud-storage-providers/?source=sfnet_header">Cloud Storage Providers</a>
+            <a href="/business-voip/?source=sfnet_header">Business VoIP Providers</a>
+            
+            <a href="/speedtest/?source=sfnet_header">Internet Speed Test</a>
+            
+            <a href="/call-center-providers/?source=sfnet_header">Call Center Providers</a>
+        </nav>
+        <nav id="nav-social">
+            
+<span></span>
+<a href="https://twitter.com/sourceforge" class="twitter" rel="nofollow" target="_blank">
+
+<svg  viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M1684 408q-67 98-162 167 1 14 1 42 0 130-38 259.5t-115.5 248.5-184.5 210.5-258 146-323 54.5q-271 0-496-145 35 4 78 4 225 0 401-138-105-2-188-64.5t-114-159.5q33 5 61 5 43 0 85-11-112-23-185.5-111.5t-73.5-205.5v-4q68 38 146 41-66-44-105-115t-39-154q0-88 44-163 121 149 294.5 238.5t371.5 99.5q-8-38-8-74 0-134 94.5-228.5t228.5-94.5q140 0 236 102 109-21 205-78-37 115-142 178 93-10 186-50z"/></svg></a>
+<a href="https://www.facebook.com/sourceforgenet/" class="facebook" rel="nofollow" target="_blank">
+
+<svg  viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M1343 12v264h-157q-86 0-116 36t-30 108v189h293l-39 296h-254v759h-306v-759h-255v-296h255v-218q0-186 104-288.5t277-102.5q147 0 228 12z"/></svg></a>
+<a href="https://plus.google.com/+sourceforge" class="google" rel="nofollow publisher" target="_blank">
+
+<svg   viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M896 786h725q12 67 12 128 0 217-91 387.5t-259.5 266.5-386.5 96q-157 0-299-60.5t-245-163.5-163.5-245-60.5-299 60.5-299 163.5-245 245-163.5 299-60.5q300 0 515 201l-209 201q-123-119-306-119-129 0-238.5 65t-173.5 176.5-64 243.5 64 243.5 173.5 176.5 238.5 65q87 0 160-24t120-60 82-82 51.5-87 22.5-78h-436v-264z"/></svg></a>
+<a href="https://www.linkedin.com/company/sourceforge.net" class="linkedin" rel="nofollow" target="_blank">
+
+<svg  viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M477 625v991h-330v-991h330zm21-306q1 73-50.5 122t-135.5 49h-2q-82 0-132-49t-50-122q0-74 51.5-122.5t134.5-48.5 133 48.5 51 122.5zm1166 729v568h-329v-530q0-105-40.5-164.5t-126.5-59.5q-63 0-105.5 34.5t-63.5 85.5q-11 30-11 81v553h-329q2-399 2-647t-1-296l-1-48h329v144h-2q20-32 41-56t56.5-52 87-43.5 114.5-15.5q171 0 275 113.5t104 332.5z"/></svg></a>
+<span></span>
+        </nav>
+    </div>
+</header>
+
+
+    
+    <div class="notification-on-project-page">
+    
+        
+    
+    
+    
+    </div>
+    
+
+
+
+
+<section id="page-body" class=" neighborhood-Projects project-sylverant mountpoint-pso_patcher 
+
+">
+<div id="nav_menu_holder">
+    
+        
+            
+    
+
+
+
+    
+    
+    
+        
+    
+    
+    <nav id="breadcrumbs" class="breadcrumbs">
+        <ul>
+            <li itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a itemprop="url" href="/">Home</a></li>
+            <li itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a itemprop="url" href="/directory">Browse</a></li>
+            
+            
+                
+                
+            
+            
+                
+            
+            
+            
+                <li itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a itemprop="url" href="/p/sylverant/">Sylverant</a></li>
+                
+            
+            
+                <li itemscope itemtype="http://data-vocabulary.org/Breadcrumb">pso_patcher</li>
+                
+            
+        </ul>
+    </nav>
+    
+    
+    
+  
+    
+        <h1 class="project_title">
+            <a href="/p/sylverant/" class="project_link">Sylverant</a>
+        </h1>
+    
+    
+    
+    <span id="dev-status" class="beta">beta</span>
+    
+    <h2 class="project_summary">
+        An open-source Phantasy Star Online server for *nix
+    </h2>
+    
+    <div class="brought-by">
+        Brought to you by:
+        
+        
+            
+                <a href="/u/ljsebald/">ljsebald</a>
+            </div>
+    
+
+        
+    
+</div>
+    <div id="top_nav" class="">
+        
+            
+<div id="top_nav_admin">
+<ul class="dropdown">
+  
+    <li class="">
+        <a href="/projects/sylverant/" class="tool-summary-32">
+            Summary
+        </a>
+        
+        
+    </li>
+  
+    <li class="">
+        <a href="/projects/sylverant/files/" class="tool-files-32">
+            Files
+        </a>
+        
+        
+    </li>
+  
+    <li class="">
+        <a href="/projects/sylverant/reviews" class="tool-reviews-32">
+            Reviews
+        </a>
+        
+        
+    </li>
+  
+    <li class="">
+        <a href="/projects/sylverant/support" class="tool-support-32">
+            Support
+        </a>
+        
+        
+    </li>
+  
+    <li class="">
+        <a href="/p/sylverant/website/" class="tool-link-32">
+            Website
+        </a>
+        
+        
+    </li>
+  
+    <li class="selected">
+        <a href="/p/sylverant/_list/git" class="tool-git-32">
+            Git ▾
+        </a>
+        
+        
+            <ul>
+                
+                    <li class=""><a href="/p/sylverant/libsylverant/">libsylverant</a></li>
+                
+                    <li class=""><a href="/p/sylverant/ship_server/">ship_server</a></li>
+                
+                    <li class=""><a href="/p/sylverant/login_server/">login_server</a></li>
+                
+                    <li class=""><a href="/p/sylverant/shipgate/">shipgate</a></li>
+                
+                    <li class=""><a href="/p/sylverant/patch_server/">patch_server</a></li>
+                
+                    <li class="selected"><a href="/p/sylverant/pso_patcher/">pso_patcher</a></li>
+                
+                    <li class=""><a href="/p/sylverant/pso_dns/">pso_dns</a></li>
+                
+                    <li class=""><a href="/p/sylverant/pso_tools/">pso_tools</a></li>
+                
+                    <li class=""><a href="/p/sylverant/libpsoarchive/">libpsoarchive</a></li>
+                
+            </ul>
+        
+    </li>
+  
+    <li class="">
+        <a href="/p/sylverant/_list/tickets" class="tool-tickets-32">
+            Tickets ▾
+        </a>
+        
+        
+            <ul>
+                
+                    <li class=""><a href="/p/sylverant/tickets/">Issues</a></li>
+                
+                    <li class=""><a href="/p/sylverant/patches/">Patches/Pull Requests</a></li>
+                
+            </ul>
+        
+    </li>
+  
+    <li class="">
+        <a href="/p/sylverant/wiki/" class="tool-wiki-32">
+            Wiki
+        </a>
+        
+        
+    </li>
+  
+  
+</ul>
+</div>
+
+
+        
+    </div>
+    <div id="content_base">
+        
+
+    
+            
+                
+                    
+
+
+<div id="sidebar">
+  
+    <div class="placeholder-no-searchbox">&nbsp;</div>
+  
+    
+    
+      
+      
+        
+    
+      <ul class="sidebarmenu">
+      
+    
+  <li>
+      
+        <a class="icon" href="/p/sylverant/pso_patcher/commit_browser" title="Browse Commits"><i class="fa fa-list"></i>
+      
+      <span>Browse Commits</span>
+      </a>
+  </li>
+  
+      
+        
+    
+  <li>
+      
+        <a class="icon" href="/p/sylverant/pso_patcher/fork" title="Fork"><i class="fa fa-code-fork"></i>
+      
+      <span>Fork</span>
+      </a>
+  </li>
+  
+      
+        
+    
+  <li>
+      
+        <a href="/p/sylverant/pso_patcher/merge-requests/"  >
+      
+      <span class="has_small">Merge Requests</span>
+      <small>0</small></a>
+  </li>
+  
+      
+        
+    
+      </ul>
+      
+    
+    
+      <h3 class="">Branches</h3>
+    
+  
+      
+        
+    
+      <ul class="sidebarmenu">
+      
+    
+  <li>
+      
+        <a href="/p/sylverant/pso_patcher/ci/master/tree/"  >
+      
+      <span>master</span>
+      </a>
+  </li>
+  
+      
+    
+    
+      </ul>
+      
+    
+    
+</div>
+                
+                
+            
+            
+                
+            
+            <div class="grid-20 pad">
+                <h2 class="dark title">Diff of
+<a href="/p/sylverant/pso_patcher/ci/766b02049b48c1d5e89e431672c716be3571422f/tree/patcher/patcher.c">/patcher/patcher.c</a>
+
+<a href="/p/sylverant/pso_patcher/ci/ed85bd9019413005666f175d2d18f218fddc8cf6/tree/patcher/patcher.c">[ed85bd]</a>
+
+..
+<a href="/p/sylverant/pso_patcher/ci/766b02049b48c1d5e89e431672c716be3571422f/tree/patcher/patcher.c">[766b02]</a>
+
+                    <!-- actions -->
+                    <small>
+                        
+
+    
+    <a class="icon" href="#" id="maximize-content" title="Maximize"><i class="fa fa-expand"></i>&nbsp;Maximize</a>
+    <a class="icon" href="#" id="restore-content" title="Restore"><i class="fa fa-compress"></i>&nbsp;Restore</a>
+
+                    </small>
+                    <!-- /actions -->
+                </h2>
+                
+                <div>
+                    
+  
+
+                    
+  
+  <div class="clip grid-19 diffbrowser">
+    <h3>
+        
+          
+          
+        
+        <a rel="nofollow" href="https://sourceforge.net/p/sylverant/pso_patcher/ci/766b02049b48c1d5e89e431672c716be3571422f/tree/patcher/patcher.c?diff=&amp;diformat=sidebyside">Switch to side-by-side view</a>
+      </h3>
+    
+      <div class="codehilite"><pre><span></span><span class="gd">--- a/patcher/patcher.c</span>
+<span class="gi">+++ b/patcher/patcher.c</span>
+<span class="gu">@@ -1,6 +1,6 @@</span>
+ /*
+     This file is part of Sylverant PSO Patcher
+<span class="gd">-    Copyright (C) 2011, 2012, 2013 Lawrence Sebald</span>
+<span class="gi">+    Copyright (C) 2011 Lawrence Sebald</span>
+ 
+     This program is free software: you can redistribute it and/or modify
+     it under the terms of the GNU General Public License version 3 as
+<span class="gu">@@ -15,28 +15,34 @@</span>
+     along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+ 
+<span class="gd">-#include &quot;cdfs.h&quot;</span>
+<span class="gd">-#include &quot;cdrom.h&quot;</span>
+<span class="gi">+#include &lt;stdio.h&gt;</span>
+<span class="gi">+#include &lt;inttypes.h&gt;</span>
+<span class="gi">+#include &lt;stdlib.h&gt;</span>
+<span class="gi">+#include &lt;string.h&gt;</span>
+<span class="gi">+</span>
+<span class="gi">+#include &lt;kos/net.h&gt;</span>
+<span class="gi">+#include &lt;kos/dbgio.h&gt;</span>
+<span class="gi">+</span>
+<span class="gi">+#include &lt;dc/cdrom.h&gt;</span>
+<span class="gi">+#include &lt;dc/maple.h&gt;</span>
+<span class="gi">+#include &lt;dc/sq.h&gt;</span>
+<span class="gi">+#include &lt;dc/maple/controller.h&gt;</span>
+<span class="gi">+</span>
+<span class="gi">+#include &lt;arch/types.h&gt;</span>
+<span class="gi">+#include &lt;arch/exec.h&gt;</span>
+<span class="gi">+#include &lt;arch/cache.h&gt;</span>
+<span class="gi">+</span>
+<span class="gi">+#include &lt;png/png.h&gt;</span>
+<span class="gi">+</span>
+<span class="gi">+#include &quot;patches.h&quot;</span>
+ #include &quot;gd.h&quot;
+<span class="gd">-#include &quot;patches.h&quot;</span>
+<span class="gd">-#include &quot;video.h&quot;</span>
+<span class="gd">-#include &quot;maple.h&quot;</span>
+<span class="gd">-#include &quot;utils.h&quot;</span>
+<span class="gd">-</span>
+<span class="gd">-#ifndef PLANET_RING</span>
+<span class="gd">-#include &quot;psobg.h&quot;</span>
+<span class="gd">-#else</span>
+<span class="gd">-#include &quot;prbg.h&quot;</span>
+<span class="gd">-#endif</span>
+<span class="gd">-</span>
+<span class="gd">-#define BIN_BASE    0xac010000</span>
+<span class="gd">-#define IP_BASE     0xac008000</span>
+<span class="gd">-#define SYS_BASE    0x8c008000</span>
+<span class="gi">+</span>
+<span class="gi">+#define BIN_BASE    0x8C010000</span>
+<span class="gi">+#define IP_BASE     0x8C008000</span>
+ #define IP_LEN      32768
+<span class="gd">-#define MAP_TABLE   0xac0081fc</span>
+<span class="gd">-#define MAP_NAMES   0xac0082bc</span>
+<span class="gd">-</span>
+<span class="gd">-extern unsigned long end;</span>
+<span class="gi">+#define MAP_TABLE   0x8C0081FC</span>
+<span class="gi">+#define MAP_NAMES   0x8C0082BC</span>
+<span class="gi">+</span>
+ static uint8 *ip_bin = (uint8 *)IP_BASE;
+ static uint8 *bin = (uint8 *)BIN_BASE;
+ 
+<span class="gu">@@ -53,54 +59,17 @@</span>
+ extern uint32 server_addr;
+ extern uint32 gd_syscall_len;
+ extern uint8 patches_enabled;
+<span class="gd">-extern void boot_stub(void *, uint32) __attribute__((noreturn));</span>
+<span class="gd">-extern uint32 boot_stub_len;</span>
+<span class="gd">-</span>
+<span class="gd">-uint32 *gd_vector_addr = (uint32 *)0xac0000bc;</span>
+<span class="gd">-</span>
+<span class="gd">-/* Dummy stub to make libgcc happy... */</span>
+<span class="gd">-void atexit() { }</span>
+<span class="gd">-</span>
+<span class="gd">-/* Calculate a CRC-32 checksum over a given block of data. Somewhat inspired by</span>
+<span class="gd">-   the CRC32 function in Figure 14-6 of http://www.hackersdelight.org/crc.pdf */</span>
+<span class="gd">-uint32 crc32(const uint8 *data, int size) {</span>
+<span class="gd">-    int i;</span>
+<span class="gd">-    uint32 rv = 0xFFFFFFFF;</span>
+<span class="gd">-</span>
+<span class="gd">-    for(i = 0; i &lt; size; ++i) {</span>
+<span class="gd">-        rv ^= data[i];</span>
+<span class="gd">-        rv = (0xEDB88320 &amp; (-(rv &amp; 1))) ^(rv &gt;&gt; 1);</span>
+<span class="gd">-        rv = (0xEDB88320 &amp; (-(rv &amp; 1))) ^(rv &gt;&gt; 1);</span>
+<span class="gd">-        rv = (0xEDB88320 &amp; (-(rv &amp; 1))) ^(rv &gt;&gt; 1);</span>
+<span class="gd">-        rv = (0xEDB88320 &amp; (-(rv &amp; 1))) ^(rv &gt;&gt; 1);</span>
+<span class="gd">-        rv = (0xEDB88320 &amp; (-(rv &amp; 1))) ^(rv &gt;&gt; 1);</span>
+<span class="gd">-        rv = (0xEDB88320 &amp; (-(rv &amp; 1))) ^(rv &gt;&gt; 1);</span>
+<span class="gd">-        rv = (0xEDB88320 &amp; (-(rv &amp; 1))) ^(rv &gt;&gt; 1);</span>
+<span class="gd">-        rv = (0xEDB88320 &amp; (-(rv &amp; 1))) ^(rv &gt;&gt; 1);</span>
+<span class="gd">-    }</span>
+<span class="gd">-</span>
+<span class="gd">-    return ~rv;</span>
+<span class="gd">-}</span>
+<span class="gd">-</span>
+<span class="gd">-static void draw_bg(void) {</span>
+<span class="gd">-    int i;</span>
+<span class="gd">-    uint16 *o = vram_s, *input = (uint16 *)bg_data;</span>
+<span class="gd">-    uint16 *end = (uint16 *)(bg_data + bg_size);</span>
+<span class="gd">-</span>
+<span class="gd">-    /* Decode the RLE&#39;d data into the framebuffer. */</span>
+<span class="gd">-    while(input &lt; end) {</span>
+<span class="gd">-        for(i = 0; i &lt; *input; ++i) {</span>
+<span class="gd">-            *o++ = *(input + 1);</span>
+<span class="gd">-        }</span>
+<span class="gd">-</span>
+<span class="gd">-        input += 2;</span>
+<span class="gd">-    }</span>
+<span class="gd">-}</span>
+<span class="gi">+</span>
+<span class="gi">+uint32 *gd_vector_addr = (uint32 *)0x8C0000BC;</span>
+<span class="gi">+</span>
+<span class="gi">+/* Framebuffer printf with transparent backgrounds... */</span>
+<span class="gi">+int fb_init();</span>
+<span class="gi">+int fb_printf(const char *fmt, ...);</span>
+ 
+ /* Find the right version of the game to patch. */
+ static pso_disc_t *find_disc(uint32 ipcrc, uint32 bincrc) {
+     int i;
+<span class="gd">-    pso_disc_t *rv = (pso_disc_t *)0;</span>
+<span class="gi">+    pso_disc_t *rv = NULL;</span>
+ 
+     for(i = 0; i &lt; NUM_PSO_DISCS; ++i) {
+         if(discs[i].crc32_ip == ipcrc &amp;&amp; discs[i].crc32_bin == bincrc) {
+<span class="gu">@@ -111,6 +80,24 @@</span>
+     return rv;
+ }
+ 
+<span class="gi">+static void wait_for_start() {</span>
+<span class="gi">+    maple_device_t *dev;</span>
+<span class="gi">+    cont_state_t *state;</span>
+<span class="gi">+    int i;</span>
+<span class="gi">+</span>
+<span class="gi">+    for(;;) {</span>
+<span class="gi">+        i = 0;</span>
+<span class="gi">+</span>
+<span class="gi">+        while((dev = maple_enum_type(i++, MAPLE_FUNC_CONTROLLER))) {</span>
+<span class="gi">+            state = (cont_state_t *)maple_dev_status(dev);</span>
+<span class="gi">+</span>
+<span class="gi">+            if(state &amp;&amp; (state-&gt;buttons &amp; CONT_START)) {</span>
+<span class="gi">+                return;</span>
+<span class="gi">+            }</span>
+<span class="gi">+        }</span>
+<span class="gi">+    }</span>
+<span class="gi">+}</span>
+<span class="gi">+</span>
+ static void wait_for_disc() {
+     int status, type = 0;
+ 
+<span class="gu">@@ -123,224 +110,105 @@</span>
+     patches_enabled = 1;
+ }
+ 
+<span class="gd">-uint32 gd_locate_data_track(CDROM_TOC *toc) {</span>
+<span class="gd">-    int i, first, last;</span>
+<span class="gd">-</span>
+<span class="gd">-    first = TOC_TRACK(toc-&gt;first);</span>
+<span class="gd">-    last = TOC_TRACK(toc-&gt;last);</span>
+<span class="gd">-</span>
+<span class="gd">-    if(first &lt; 1 || last &gt; 99 || first &gt; last) {</span>
+<span class="gd">-        /* Guess that its the first High Density area track... */</span>
+<span class="gd">-        return 45150;</span>
+<span class="gd">-    }</span>
+<span class="gd">-</span>
+<span class="gd">-    for(i = first; i &lt;= last; ++i) {</span>
+<span class="gd">-        if(TOC_CTRL(toc-&gt;entry[i - 1]) == 4) {</span>
+<span class="gd">-            return TOC_LBA(toc-&gt;entry[i - 1]);</span>
+<span class="gd">-        }</span>
+<span class="gd">-    }</span>
+<span class="gd">-</span>
+<span class="gd">-    /* Punt. */</span>
+<span class="gd">-    return 45150;</span>
+<span class="gd">-}</span>
+<span class="gd">-</span>
+<span class="gd">-/* The next 3 functions are borrowed (with minor changes) from Marcus&#39; old maple</span>
+<span class="gd">-   demo program. The last one wasn&#39;t a function in Marcus&#39; old code, but rather</span>
+<span class="gd">-   sat right near the end of main(). */</span>
+<span class="gd">-unsigned int read_belong(unsigned int *l) {</span>
+<span class="gd">-    unsigned char *b = (unsigned char *)l;</span>
+<span class="gd">-    return (b[0] &lt;&lt; 24) | (b[1] &lt;&lt; 16) | (b[2] &lt;&lt; 8) | b[3];</span>
+<span class="gd">-}</span>
+<span class="gd">-</span>
+<span class="gd">-void write_belong(unsigned int *l, unsigned int v) {</span>
+<span class="gd">-    unsigned char *b = (unsigned char *)l;</span>
+<span class="gd">-    b[0] = v &gt;&gt; 24;</span>
+<span class="gd">-    b[1] = v &gt;&gt; 16;</span>
+<span class="gd">-    b[2] = v &gt;&gt; 8;</span>
+<span class="gd">-    b[3] = v;</span>
+<span class="gd">-}</span>
+<span class="gd">-</span>
+<span class="gd">-/* Borrowed from KOS... */</span>
+<span class="gd">-#define CONT_C              (1&lt;&lt;0)</span>
+<span class="gd">-#define CONT_B              (1&lt;&lt;1)</span>
+<span class="gd">-#define CONT_A              (1&lt;&lt;2)</span>
+<span class="gd">-#define CONT_START          (1&lt;&lt;3)</span>
+<span class="gd">-#define CONT_DPAD_UP        (1&lt;&lt;4)</span>
+<span class="gd">-#define CONT_DPAD_DOWN      (1&lt;&lt;5)</span>
+<span class="gd">-#define CONT_DPAD_LEFT      (1&lt;&lt;6)</span>
+<span class="gd">-#define CONT_DPAD_RIGHT     (1&lt;&lt;7)</span>
+<span class="gd">-#define CONT_Z              (1&lt;&lt;8)</span>
+<span class="gd">-#define CONT_Y              (1&lt;&lt;9)</span>
+<span class="gd">-#define CONT_X              (1&lt;&lt;10)</span>
+<span class="gd">-#define CONT_D              (1&lt;&lt;11)</span>
+<span class="gd">-#define CONT_DPAD2_UP       (1&lt;&lt;12)</span>
+<span class="gd">-#define CONT_DPAD2_DOWN     (1&lt;&lt;13)</span>
+<span class="gd">-#define CONT_DPAD2_LEFT     (1&lt;&lt;14)</span>
+<span class="gd">-#define CONT_DPAD2_RIGHT    (1&lt;&lt;15)</span>
+<span class="gd">-</span>
+<span class="gd">-static uint16 wait_for_buttons(uint16 mask) {</span>
+<span class="gd">-    int port;</span>
+<span class="gd">-    char *res;</span>
+<span class="gd">-    unsigned int params[1];</span>
+<span class="gd">-    uint16 buttons;</span>
+<span class="gd">-</span>
+<span class="gd">-    for(;;) {</span>
+<span class="gd">-        for(port = 0; port &lt; 4; port++) {</span>
+<span class="gd">-            /* Query controller condition (non-controller will return error) */</span>
+<span class="gd">-            write_belong(&amp;params[0], MAPLE_FUNC_CONTROLLER);</span>
+<span class="gd">-</span>
+<span class="gd">-            do {</span>
+<span class="gd">-                res = maple_docmd(port, 0, MAPLE_COMMAND_GETCOND, 1, params);</span>
+<span class="gd">-            } while(*res == MAPLE_RESPONSE_AGAIN);</span>
+<span class="gd">-</span>
+<span class="gd">-            if(*res == MAPLE_RESPONSE_DATATRF &amp;&amp; res[3] &gt;= 2 &amp;&amp;</span>
+<span class="gd">-               read_belong((unsigned int *)(res + 4)) == MAPLE_FUNC_CONTROLLER) {</span>
+<span class="gd">-                buttons = ~(*(uint16 *)(res + 8));</span>
+<span class="gd">-</span>
+<span class="gd">-                if(buttons &amp; mask)</span>
+<span class="gd">-                    return buttons &amp; mask;</span>
+<span class="gd">-            }</span>
+<span class="gd">-        }</span>
+<span class="gd">-    }</span>
+<span class="gd">-}</span>
+<span class="gd">-</span>
+<span class="gd">-#define wait_for_start() wait_for_buttons(CONT_START)</span>
+<span class="gd">-</span>
+<span class="gd">-/* Framebuffer printf with transparent backgrounds... */</span>
+<span class="gd">-int fb_init();</span>
+<span class="gd">-int fb_write_string(const char *data);</span>
+<span class="gd">-int fb_write_hex(uint32 val);</span>
+<span class="gd">-</span>
+<span class="gd">-void dcache_flush_range(uint32 base, uint32 len);</span>
+<span class="gi">+static void load_and_draw_bg() {</span>
+<span class="gi">+    kos_img_t img;</span>
+<span class="gi">+</span>
+<span class="gi">+    if(png_to_img(&quot;/rd/bg.png&quot;, PNG_NO_ALPHA, &amp;img)) {</span>
+<span class="gi">+        return;</span>
+<span class="gi">+    }</span>
+<span class="gi">+</span>
+<span class="gi">+    /* Make sure the image is sane... */</span>
+<span class="gi">+    if(img.w != 640 || img.h != 480 || img.fmt != KOS_IMG_FMT_RGB565) {</span>
+<span class="gi">+        return;</span>
+<span class="gi">+    }</span>
+<span class="gi">+</span>
+<span class="gi">+    /* Copy it over to the framebuffer */</span>
+<span class="gi">+    sq_cpy(vram_s, img.data, img.byte_count);</span>
+<span class="gi">+</span>
+<span class="gi">+    kos_img_free(&amp;img, 0);</span>
+<span class="gi">+}</span>
+<span class="gi">+</span>
+<span class="gi">+extern uint8 romdisk[];</span>
+<span class="gi">+KOS_INIT_ROMDISK(romdisk);</span>
+ 
+ int main(int argc, char *argv[]) {
+<span class="gi">+    FILE *fp;</span>
+<span class="gi">+    uint32 len;</span>
+<span class="gi">+    uint32 crc, ipcrc;</span>
+     CDROM_TOC toc;
+<span class="gd">-    uint32 sz = 408, data_fad;</span>
+<span class="gd">-    int i, fd, cur = 0, rsz;</span>
+<span class="gd">-    char filename[17];</span>
+<span class="gd">-    uint32 ipcrc, crc;</span>
+<span class="gi">+    int rv = -1, i;</span>
+<span class="gi">+    uint32 data_fad = 0, sz;</span>
+     pso_disc_t *disc;
+<span class="gd">-    int rv = -1;</span>
+<span class="gd">-</span>
+<span class="gd">-#ifndef PLANET_RING</span>
+<span class="gd">-    const uint32 *ptbl;</span>
+<span class="gd">-    uint16 buttons;</span>
+<span class="gd">-#endif</span>
+<span class="gd">-</span>
+<span class="gd">-    (void)argc;</span>
+<span class="gd">-    (void)argv;</span>
+<span class="gd">-</span>
+<span class="gd">-    vid_init(DM_640x480, PM_RGB565);</span>
+<span class="gd">-    cdrom_init();</span>
+<span class="gd">-    maple_init();</span>
+<span class="gd">-</span>
+<span class="gd">-restart:</span>
+<span class="gi">+</span>
+     fb_init();
+<span class="gd">-    draw_bg();</span>
+<span class="gd">-</span>
+<span class="gd">-#ifndef PLANET_RING</span>
+<span class="gd">-    fb_write_string(&quot;Sylverant PSO Patcher v2.0\n&quot;</span>
+<span class="gd">-                    &quot;Copyright (C) 2011-2013 Lawrence Sebald\n\n&quot;);</span>
+<span class="gd">-#else</span>
+<span class="gd">-    fb_write_string(&quot;Sylverant Planet Ring Patcher v2.0\n&quot;</span>
+<span class="gd">-                    &quot;Copyright (C) 2011-2013 Lawrence Sebald\n\n&quot;);</span>
+<span class="gd">-#endif</span>
+<span class="gi">+    load_and_draw_bg();</span>
+<span class="gi">+</span>
+<span class="gi">+    fb_printf(&quot;Sylverant PSO Patcher v1.0\n&quot;</span>
+<span class="gi">+              &quot;Copyright (C) 2011 Lawrence Sebald\n\n&quot;);</span>
+ 
+     /* Wait for the user to insert a GD-ROM */
+<span class="gd">-    fb_write_string(&quot;Please insert a GD-ROM...\n&quot;);</span>
+<span class="gi">+    fb_printf(&quot;Please insert a GD-ROM...\n&quot;);</span>
+     wait_for_disc();
+ 
+<span class="gd">-    fb_write_string(&quot;Please wait while the disc is read...\n&quot;);</span>
+<span class="gi">+    fb_printf(&quot;Please wait while the disc is read...\n&quot;);</span>
+ 
+     /* Reinitialize the drive */
+<span class="gd">-    do {</span>
+<span class="gi">+    while(rv != ERR_OK) {</span>
+         rv = cdrom_reinit();
+<span class="gd">-    } while(rv != ERR_OK);</span>
+<span class="gd">-</span>
+<span class="gi">+    }</span>
+<span class="gi">+</span>
+<span class="gi">+    /* Read the TOC of the inserted disc */</span>
+<span class="gi">+    sz = 408;</span>
+     gd_read_toc((uint16 *)&amp;toc, &amp;sz);
+ 
+     /* Figure out where IP.BIN should be... */
+<span class="gd">-    data_fad = gd_locate_data_track(&amp;toc);</span>
+<span class="gd">-</span>
+<span class="gd">-    fb_write_string(&quot;Reading IP.BIN...\n&quot;);</span>
+<span class="gi">+    data_fad = cdrom_locate_data_track(&amp;toc);</span>
+<span class="gi">+</span>
+<span class="gi">+    /* We&#39;ll need to read from the disc to grab 1ST_READ.BIN... */</span>
+<span class="gi">+    fs_iso9660_gd_init();</span>
+<span class="gi">+</span>
+<span class="gi">+    fb_printf(&quot;Reading IP.BIN...\n&quot;);</span>
+ 
+     /* Attempt to read in IP.BIN */
+     for(i = 0; i &lt; 16; ++i) {
+         sz = 2048;
+<span class="gd">-        gd_read_sector(data_fad + i, (uint16 *)(ip_bin + i * 2048), &amp;sz);</span>
+<span class="gd">-    }</span>
+<span class="gd">-</span>
+<span class="gd">-    /* Figure out what the boot file is called */</span>
+<span class="gd">-    memcpy(filename, (char *)ip_bin + 0x60, 16);</span>
+<span class="gd">-    filename[16] = 0;</span>
+<span class="gd">-</span>
+<span class="gd">-    /* Remove any spaces at the end of the filename */</span>
+<span class="gd">-    for(i = 0; i &lt; 16; ++i) {</span>
+<span class="gd">-        if(filename[i] == &#39; &#39;) {</span>
+<span class="gd">-            filename[i] = 0;</span>
+<span class="gd">-            break;</span>
+<span class="gd">-        }</span>
+<span class="gi">+        gd_read_sector(data_fad + i, (uint16 *)(ip_bin + (i * 2048)), &amp;sz);</span>
+     }
+ 
+     /* Grab the CRC of IP.BIN */
+<span class="gd">-    ipcrc = crc32(ip_bin, IP_LEN);</span>
+<span class="gd">-</span>
+<span class="gd">-    /* See if the binary is a WinCE binary or not... Unfortunately, I still</span>
+<span class="gd">-       can&#39;t seem to get WinCE games to boot... */</span>
+<span class="gd">-    if(hex_to_uint32((char *)ip_bin + 0x38, 7) &amp; 1) {</span>
+<span class="gd">-        fb_write_string(&quot;Windows CE based games are not supported!\n&quot;</span>
+<span class="gd">-                        &quot;Please remove the GD-ROM, insert a supported\n&quot;</span>
+<span class="gd">-                        &quot;game and press START.\n&quot;);</span>
+<span class="gd">-        wait_for_start();</span>
+<span class="gd">-        patches_enabled = 0;</span>
+<span class="gd">-        goto restart;</span>
+<span class="gd">-    }</span>
+<span class="gd">-</span>
+<span class="gd">-    fb_write_string(&quot;Reading &quot;);</span>
+<span class="gd">-    fb_write_string(filename);</span>
+<span class="gd">-    fb_write_string(&quot;...\n&quot;);</span>
+<span class="gd">-</span>
+<span class="gd">-    /* Read the binary in. This reads directly into the correct address. */</span>
+<span class="gd">-    if((fd = open(filename, O_RDONLY)) &lt; 0)</span>
+<span class="gi">+    ipcrc = net_crc32le(ip_bin, IP_LEN);</span>
+<span class="gi">+    fb_printf(&quot;Reading 1ST_READ.BIN...\n&quot;);</span>
+<span class="gi">+</span>
+<span class="gi">+    fp = fopen(&quot;/gd/1ST_READ.BIN&quot;, &quot;rb&quot;);</span>
+<span class="gi">+    if(!fp) {</span>
+         return -1;
+<span class="gd">-</span>
+<span class="gd">-    while((rsz = read(fd, bin + cur, 2048)) &gt; 0) {</span>
+<span class="gd">-        cur += rsz;</span>
+<span class="gd">-    }</span>
+<span class="gd">-</span>
+<span class="gd">-    close(fd);</span>
+<span class="gi">+    }</span>
+<span class="gi">+</span>
+<span class="gi">+    fseek(fp, 0, SEEK_END);</span>
+<span class="gi">+    len = (uint32)ftell(fp);</span>
+<span class="gi">+    fseek(fp, 0, SEEK_SET);</span>
+<span class="gi">+</span>
+<span class="gi">+    fread(bin, 1, (size_t)len, fp);</span>
+<span class="gi">+    fclose(fp);</span>
+<span class="gi">+</span>
+<span class="gi">+    /* Flush the cache over the binary&#39;s space. */</span>
+<span class="gi">+    dcache_flush_range(0x8C010000, len);</span>
+<span class="gi">+    icache_flush_range(0x8C010000, len);</span>
+ 
+     /* Grab the CRC of the binary */
+<span class="gd">-    crc = crc32(bin, cur);</span>
+<span class="gi">+    crc = net_crc32le(bin, len);</span>
+ 
+     /* Find the appropriate patch set... */
+     disc = find_disc(ipcrc, crc);
+ 
+     if(!disc) {
+<span class="gd">-#ifndef PLANET_RING</span>
+<span class="gd">-        fb_write_string(&quot;Inserted disc is unknown...\n&quot;</span>
+<span class="gd">-                        &quot;If it is PSO, please report the CRCs below\n&quot;</span>
+<span class="gd">-                        &quot;along with the version of PSO in use.\n&quot;</span>
+<span class="gd">-                        &quot;IP.BIN CRC: &quot;);</span>
+<span class="gd">-        fb_write_hex(ipcrc);</span>
+<span class="gd">-        fb_write_string(&quot;\n&quot;);</span>
+<span class="gd">-        fb_write_string(filename);</span>
+<span class="gd">-        fb_write_string(&quot; CRC = &quot;);</span>
+<span class="gd">-        fb_write_hex(crc);</span>
+<span class="gd">-        fb_write_string(&quot;\n\nPress START to load anyway.\n&quot;);</span>
+<span class="gd">-#else</span>
+<span class="gd">-        fb_write_string(&quot;Inserted disc is unknown...\n&quot;</span>
+<span class="gd">-                        &quot;If it is Planet Ring, please report the\n&quot;</span>
+<span class="gd">-                        &quot;CRCs below.\n&quot;</span>
+<span class="gd">-                        &quot;IP.BIN CRC: &quot;);</span>
+<span class="gd">-        fb_write_hex(ipcrc);</span>
+<span class="gd">-        fb_write_string(&quot;\n&quot;);</span>
+<span class="gd">-        fb_write_string(filename);</span>
+<span class="gd">-        fb_write_string(&quot; CRC = &quot;);</span>
+<span class="gd">-        fb_write_hex(crc);</span>
+<span class="gd">-        fb_write_string(&quot;\n\nPress START to load anyway.\n&quot;);</span>
+<span class="gd">-#endif</span>
+<span class="gd">-</span>
+<span class="gi">+        fb_printf(&quot;Inserted disc is unknown...\n&quot;</span>
+<span class="gi">+               &quot;If it is PSO, please report the CRCs shown below\n&quot;</span>
+<span class="gi">+               &quot;along with the version of PSO in use.\n&quot;</span>
+<span class="gi">+               &quot;IP.BIN CRC: %08x\n&quot;</span>
+<span class="gi">+               &quot;1ST_READ.BIN CRC = %08x\n\n&quot;</span>
+<span class="gi">+               &quot;Press START to load anyway.\n&quot;, (unsigned int)ipcrc,</span>
+<span class="gi">+               (unsigned int)crc);</span>
+         wait_for_start();
+         patches_enabled = 0;
+     }
+<span class="gu">@@ -353,55 +221,28 @@</span>
+         patch_trigger_pattern = disc-&gt;patch_trigger_pattern;
+         old_gd_vector = *gd_vector_addr;
+         server_addr = disc-&gt;server_addr;
+<span class="gd">-</span>
+<span class="gd">-        /* Wait for the user to hit start. */</span>
+<span class="gd">-        fb_write_string(&quot;Detected game:\n&quot;);</span>
+<span class="gd">-        fb_write_string(disc-&gt;name);</span>
+<span class="gd">-</span>
+<span class="gd">-#ifdef PLANET_RING</span>
+<span class="gd">-        fb_write_string(&quot;\nPress START to load and patch!\n&quot;);</span>
+<span class="gd">-        wait_for_start();</span>
+<span class="gd">-#else</span>
+<span class="gd">-        /* If we&#39;re looking at PSOv2, there&#39;s optional patches. */</span>
+<span class="gd">-        if(disc-&gt;index &gt;= 3 &amp;&amp; disc-&gt;index &lt;= 5) {</span>
+<span class="gd">-            fb_write_string(&quot;\nPress START to load with all patches or\n&quot;</span>
+<span class="gd">-                            &quot;press A to load without the battle stage\n&quot;</span>
+<span class="gd">-                            &quot;music patch.\n&quot;);</span>
+<span class="gd">-            buttons = wait_for_buttons(CONT_START | CONT_A);</span>
+<span class="gd">-</span>
+<span class="gd">-            if(buttons &amp; CONT_START)</span>
+<span class="gd">-                ptbl = patch_tables2[disc-&gt;index];</span>
+<span class="gd">-            else</span>
+<span class="gd">-                ptbl = patch_tables[disc-&gt;index];</span>
+<span class="gd">-        }</span>
+<span class="gd">-        else {</span>
+<span class="gd">-            fb_write_string(&quot;\nPress START to load and patch!\n&quot;);</span>
+<span class="gd">-            wait_for_start();</span>
+<span class="gd">-            ptbl = patch_tables[disc-&gt;index];</span>
+<span class="gd">-        }</span>
+<span class="gd">-#endif</span>
+<span class="gd">-</span>
+<span class="gd">-#ifndef PLANET_RING</span>
+<span class="gd">-        /* Copy the patches over, now that we know what we&#39;re copying... */</span>
+<span class="gd">-        memcpy(&amp;patches_count, ptbl, sizeof(uint32) * 23);</span>
+<span class="gd">-#endif</span>
+<span class="gi">+        memcpy(&amp;patches_count, patch_tables[disc-&gt;index], sizeof(uint32) * 19);</span>
+ 
+         /* Copy the syscall on to where it goes, and patch the address in the
+            syscalls table. */
+<span class="gd">-        memcpy((void *)SYS_BASE, gd_syscall, gd_syscall_len);</span>
+<span class="gd">-        *gd_vector_addr = SYS_BASE;</span>
+<span class="gd">-</span>
+<span class="gd">-#ifndef PLANET_RING</span>
+<span class="gi">+        memcpy((void *)IP_BASE, gd_syscall, gd_syscall_len);</span>
+<span class="gi">+        *gd_vector_addr = IP_BASE;</span>
+<span class="gi">+</span>
+         /* Copy the map table stuff, as appropriate. */
+         memcpy((void *)MAP_TABLE, map_ptrs[disc-&gt;index], sizeof(uint32) * 48);
+         memcpy((void *)MAP_NAMES, map_names, 68);
+<span class="gd">-#endif        </span>
+<span class="gd">-</span>
+<span class="gd">-        dcache_flush_range(SYS_BASE, 768);</span>
+<span class="gd">-    }</span>
+<span class="gd">-</span>
+<span class="gd">-    /* The binary is in place, so let&#39;s try to boot it, shall we? */</span>
+<span class="gd">-    void (*f)(void) __attribute__((noreturn));</span>
+<span class="gd">-    f = (void *)((uint32)(&amp;boot_stub) | 0xa0000000);</span>
+<span class="gd">-    f();</span>
+<span class="gd">-}</span>
+<span class="gi">+</span>
+<span class="gi">+        dcache_flush_range(IP_BASE, 768);</span>
+<span class="gi">+        icache_flush_range(IP_BASE, 768);</span>
+<span class="gi">+        dcache_flush_range(0x8C0000BC, 4);</span>
+<span class="gi">+</span>
+<span class="gi">+        /* Wait for the user to hit start. */</span>
+<span class="gi">+        fb_printf(&quot;Detected game:\n%s\n&quot;</span>
+<span class="gi">+               &quot;Press START to load and patch!\n&quot;, disc-&gt;name);</span>
+<span class="gi">+</span>
+<span class="gi">+        wait_for_start();</span>
+<span class="gi">+    }</span>
+<span class="gi">+</span>
+<span class="gi">+    /* We&#39;re done, pass off control. */</span>
+<span class="gi">+    arch_exec(bin, len);</span>
+<span class="gi">+}</span>
+</pre></div>
+
+    
+  </div>
+  
+
+                </div>
+                
+                
+            </div>
+        
+
+
+    </div>
+</section>
+  
+
+
+<footer id="site-footer">
+    <div class="wrapper">
+<nav>
+            <h5>SourceForge</h5>
+            <a href="/about">About</a>
+            <a href="/blog/category/sitestatus/">Site Status</a>
+            <a href="https://twitter.com/sfnet_ops">@sfnet_ops</a>
+            <a id="allura-notice" href="http://allura.apache.org/">
+                <p>Powered by</p>
+                <p>Apache Allura™</p>
+                <img src="https://a.fsdn.com/allura/nf/1513797982/_ew_/theme/sftheme/images/sftheme/logo-black-svg_g.png" />
+            </a>
+        </nav>
+        <nav>
+            <h5>Find and Develop Software</h5>
+            <a href="/create/">Create a Project</a>
+            <a href="/directory/">Software Directory</a>
+            <a href="/top">Top Downloaded Projects</a>
+        </nav>
+        <nav>
+            <h5>Community</h5>
+            <a href="/blog/">Blog</a>
+            <a href="https://twitter.com/sourceforge">@sourceforge</a>
+            <a href="https://library.slashdotmedia.com/">Resources</a>
+        </nav>
+        <nav>
+            <h5>Help</h5>
+            <a href="https://p.sf.net/sourceforge/docs">Site Documentation</a>
+            <a href="/support">Support Request</a>
+        </nav>
+    </div>
+</footer>
+<footer id="site-copyright-footer">
+    <div class="wrapper">
+        <div id="copyright">
+            &copy; 2018 Slashdot Media. All Rights Reserved.<br />
+        </div>
+        <nav>
+            <a href="http://slashdotmedia.com/terms-of-use">Terms</a>
+            <a href="http://slashdotmedia.com/privacy-statement/">Privacy</a>
+            <span id='teconsent'></span>
+            <a href="http://slashdotmedia.com/opt-out-choices">Opt Out Choices</a>
+            <a href="http://slashdotmedia.com">Advertise</a>
+        </nav>
+    </div>
+</footer>
+
+
+
+    <div id="newsletter-floating-container"></div>
+    <script type="text/javascript">
+        SF.EU_country_codes = ["BE", "FR", "BG", "DK", "VG", "WF", "HR", "BM", "DE", "HU", "JE", "FI", "FK", "YT", "NL", "PT", "CW", "NC", "LV", "RE", "LT", "LU", "PF", "GI", "TF", "RO", "PN", "TC", "PL", "PM", "GS", "GR", "GP", "EE", "IT", "GG", "CZ", "CY", "SX", "IO", "AT", "AW", "AX", "GL", "IE", "KY", "ES", "ME", "MF", "BL", "GF", "SK", "MT", "SI", "SH", "MQ", "MS", "AI", "SE", "GB"];
+        SF.unknown_country_codes = ["", "A1", "A2", "O1"];
+        $('#newsletter-floating-container').load(
+            '/user/newsletters/floating',
+            function() {
+                // we missed the first wiring at DOM-ready, so do this form more explicitly
+                $('#newsletter-floating-container .newsletter-subscribe-form').each(SF.wire_up_subscribe_form);
+            }
+        );
+    </script>
+    
+        <script src="https://www.google.com/recaptcha/api.js?render=explicit" async defer></script>
+    
+
+<div id="messages">
+    
+</div>
+
+
+    <!-- ew:body_js -->
+
+
+    <script type="text/javascript" src="https://a.fsdn.com/allura/nf/1513797982/_ew_/_slim/js?href=allura%2Fjs%2Fjquery.notify.js%3Ballura%2Fjs%2Fjquery.tooltipster.js%3Ballura%2Fjs%2Fsylvester.js%3Ballura%2Fjs%2Ftwemoji.min.js%3Ballura%2Fjs%2Fpb.transformie.min.js%3Ballura%2Fjs%2Fallura-base.js%3Ballura%2Fjs%2Fadmin_modal.js%3Bjs%2Fjquery.lightbox_me.js%3Btheme%2Fsftheme%2Fjs%2Fsftheme%2Fshared.js%3Btheme%2Fsftheme%2Fjs%2Fsftheme%2Fsticky.js%3Ballura%2Fjs%2Fmaximize-content.js"></script>
+
+    
+<!-- /ew:body_js -->
+
+
+
+    <!-- ew:body_js_tail -->
+
+
+    
+<!-- /ew:body_js_tail -->
+
+
+
+
+<script type="text/javascript">(function() {
+  $('#access_urls .btn').click(function(evt){
+    evt.preventDefault();
+    var parent = $(this).parents('.btn-bar');
+    var checkout_cmd = $(this).attr('data-url');
+    $(parent).find('input').val(checkout_cmd);
+    $(parent).find('span').text($(this).attr('title')+' access');
+    $(this).parent().children('.btn').removeClass('active');
+    $(this).addClass('active');
+    if (checkout_cmd.indexOf(' http://') !== -1 || checkout_cmd.indexOf(' https://') !== -1 ) {
+      $('#http-2fa-msg').show();
+    } else {
+      $('#http-2fa-msg').hide();
+    }
+  });
+  $('#access_urls .btn').first().click();
+
+  
+  var repo_status = document.getElementById('repo_status');
+  // The repo_status div will only be present if repo.status != 'ready'
+  if (repo_status) {
+    $('.spinner').show()
+    var delay = 500;
+    function check_status() {
+        $.get('/p/sylverant/pso_patcher/status', function(data) {
+            if (data.status === 'ready') {
+                $('.spinner').hide()
+                $('#repo_status h2').html('Repo status: ready. <a href=".">Click here to refresh this page.</a>');
+            }
+            else {
+                $('#repo_status h2 span').html(data.status);
+                if (delay < 60000){
+                    delay = delay * 2;
+                }
+                window.setTimeout(check_status, delay);
+            }
+        });
+    }
+    var status_checker = window.setTimeout(check_status, delay);
+    
+  }
+}());
+</script>
+
+<script type="text/javascript">
+  var overflow = $("pre").get(0);
+  var len = overflow.scrollWidth - 30;
+  $(".gi, .gd, .gu").width(len);
+</script>
+
+
+    
+
+
+    
+        <script type="text/javascript" src='//consent-st.truste.com/get?name=notice.js&domain=slashdot.org&c=teconsent&text=true'></script>
+    
+    
+
+<script>
+    $(document).ready(function () {
+        $(".tooltip").tooltipster({
+            animation: 'fade',
+            delay: 200,
+            theme: 'tooltipster-light',
+            trigger: 'hover',
+            position: 'right',
+            iconCloning: false,
+            maxWidth: 300
+        }).focus(function () {
+            $(this).tooltipster('show');
+        }).blur(function () {
+            $(this).tooltipster('hide');
+        });
+    });
+</script>
+</body>
+</html>

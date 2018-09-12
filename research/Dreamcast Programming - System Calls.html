@@ -1,0 +1,1133 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+
+<html>
+
+<head>
+
+<title>Dreamcast Programming - System Calls</title>
+
+</head>
+
+<body link="#6699cc" text="white" vlink="#6677cc" alink="red" bgcolor="black">
+<top>
+
+<img alt="" src="/dc/dc_mark.gif" align="right">
+
+<p><img height="43" style="border: none;" src="/_internal/graphic_text!0/asw4kq4vlpnfxtobd3366p2z0ge0klc$hb30sg26juisnjt8ytlsy5sk6i1zv9" alt="System Calls" valign="top" width="188" /></p>
+
+
+The Dreamcast ROM does not offer much in terms of system calls for
+applications to use.  If fact, the few that are available are not even
+executed from the ROM, but reside in the RAM area
+<tt>8C000000-8C007FFF</tt> together with the default exception and
+interrupt handlers.  Any functionality not provided by these syscalls
+(graphics/sound/whatnot) must be performed by the application itself
+banging the hardware.  The official devkit provides link libraries to
+perform these duties.
+<br clear="right">
+
+
+
+<p><img height="35" style="border: none;" src="/_internal/graphic_text!0/hwhvnjki1vaw5xeayq6ziu4zt3iviz1$7qi51cx4kn039hv4e8tfmq4gn5ks8g1" alt="Calling conventions" valign="top" width="240" /></p>
+
+
+
+<p>Each system call is performed via an indirect vector.  This means that
+rather than calling a fixed address, a function pointer is fetched
+from the fixed address and the call goes through this pointer.  For
+each vector there is a number of different functions available,
+selected by register <tt>r7</tt>.  Sometimes there is also a
+superfunction to be selected by register <tt>r6</tt>.  Any arguments to
+the syscall is passed in registers <tt>r4</tt> and <tt>r5</tt> (and
+<tt>r6</tt>, if it is not used to select superfunction) as in a normal
+function call.  The ROMFONT syscalls are a bit peculiar by using
+<tt>r1</tt> instead of <tt>r7</tt> to select function.</p>
+
+
+
+<p><img height="35" style="border: none;" src="/_internal/graphic_text!0/hwhvnjki1vaw5xeayq6ziu4zt3iviz1$dnqyzu5wxrk0lag5bt9w9tc3ai0g90x" alt="Function call list" valign="top" width="197" /></p>
+
+
+
+<p>This is a list of all known system calls.  They are sorted first by
+    vector, and then by (superfunction and) function code.  Detailed
+    descriptions follow below.  (The names selected for the syscalls
+    below are totally arbitrary, and is only intended as a mnemonic
+    for the function of the call.)</p>
+
+
+
+<dl>
+
+
+<dt>Vector <tt>8C0000B0</tt> - <a href="#vecB0">System information functions</a></dt>
+
+
+<dd>
+<ul>
+
+
+<li><tt>r7</tt>=<tt>0</tt> - <a href="#fB0_0">SYSINFO_INIT</a></li>
+
+
+<li><tt>r7</tt>=<tt>1</tt> - <i>not a valid syscall</i></li>
+
+
+<li><tt>r7</tt>=<tt>2</tt> - <a href="#fB0_2">SYSINFO_ICON</a></li>
+
+
+<li><tt>r7</tt>=<tt>3</tt> - <a href="#fB0_3">SYSINFO_ID</a></li>
+
+
+</ul>
+</dd>
+
+
+
+<dt>Vector <tt>8C0000B4</tt> - <a href="#vecB4">Boot-ROM font functions</a></dt>
+
+
+<dd>
+<ul>
+
+
+<li><tt>r1</tt>=<tt>0</tt> - <a href="#fB4_0">ROMFONT_ADDRESS</a></li>
+
+
+<li><tt>r1</tt>=<tt>1</tt> - <a href="#fB4_1">ROMFONT_LOCK</a></li>
+
+
+<li><tt>r1</tt>=<tt>2</tt> - <a href="#fB4_2">ROMFONT_UNLOCK</a></li>
+
+
+</ul>
+</dd>
+
+
+
+<dt>Vector <tt>8C0000B8</tt> - <a href="#vecB8">Flash ROM functions</a></dt>
+
+
+<dd>
+<ul>
+
+
+<li><tt>r7</tt>=<tt>0</tt> - <a href="#fB8_0">FLASHROM_INFO</a></li>
+
+
+<li><tt>r7</tt>=<tt>1</tt> - <a href="#fB8_1">FLASHROM_READ</a></li>
+
+
+<li><tt>r7</tt>=<tt>2</tt> - <a href="#fB8_2">FLASHROM_WRITE</a></li>
+
+
+<li><tt>r7</tt>=<tt>3</tt> - <a href="#fB8_3">FLASHROM_DELETE</a></li>
+
+
+</ul>
+</dd>
+
+
+
+<dt>Vector <tt>8C0000BC</tt> - <a href="#vecBC">MISC/GDROM functions</a></dt>
+
+
+<dd>
+<ul>
+
+
+<li><tt>r6</tt>=<tt>-1</tt> - MISC superfunction
+
+<ul>
+
+
+<li><tt>r7</tt>=<tt>0</tt> - <a href="#fBC_0">MISC_INIT</a></li>
+
+
+<li><tt>r7</tt>=<tt>1</tt> - <a href="#fBC_1">MISC_SETVECTOR</a></li>
+
+
+</ul>
+</li>
+
+
+<li><tt>r6</tt>=<tt>0</tt> - GDROM superfunction
+
+<ul>
+
+
+<li><tt>r7</tt>=<tt>0</tt> - <a href="#fC0_0">GDROM_SEND_COMMAND</a></li>
+
+
+<li><tt>r7</tt>=<tt>1</tt> - <a href="#fC0_1">GDROM_CHECK_COMMAND</a></li>
+
+
+<li><tt>r7</tt>=<tt>2</tt> - <a href="#fC0_2">GDROM_MAINLOOP</a></li>
+
+
+<li><tt>r7</tt>=<tt>3</tt> - <a href="#fC0_3">GDROM_INIT</a></li>
+
+
+<li><tt>r7</tt>=<tt>4</tt> - <a href="#fC0_4">GDROM_CHECK_DRIVE</a></li>
+
+
+<li><tt>r7</tt>=<tt>5</tt> - GDROM_?DMA?</li>
+
+
+<li><tt>r7</tt>=<tt>6</tt> - GDROM_?DMA?</li>
+
+
+<li><tt>r7</tt>=<tt>7</tt> - GDROM_?DMA?</li>
+
+
+<li><tt>r7</tt>=<tt>8</tt> - <a href="#fC0_8">GDROM_ABORT_COMMAND</a></li>
+
+
+<li><tt>r7</tt>=<tt>9</tt> - <a href="#fC0_9">GDROM_RESET</a></li>
+
+
+<li><tt>r7</tt>=<tt>10</tt> - <a href="#fC0_10">GDROM_SECTOR_MODE</a></li>
+
+
+<li><tt>r7</tt>=<tt>11</tt> - GDROM_?</li>
+
+
+<li><tt>r7</tt>=<tt>12</tt> - GDROM_?</li>
+
+
+<li><tt>r7</tt>=<tt>13</tt> - GDROM_?</li>
+
+
+<li><tt>r7</tt>=<tt>14</tt>-<tt>15</tt> - <i>not implemented</i></li>
+
+
+</ul>
+</li>
+
+
+<li><tt>r6</tt>=<tt>1</tt>-<tt>7</tt> - <i>user defined superfunctions</i></li>
+
+
+</ul>
+</dd>
+
+
+</dl>
+
+
+
+<a name="vecB0">
+<p><img height="23" style="border: none;" src="/_internal/graphic_text!0/hlcfhu1cyw2cyj7k6g8xd5wjq7q2w5y$d3zargvlv14twecmbwlc2itcnqd8w5m" alt="Vector 8C0000B0 - SYSINFO" valign="top" width="230" /></p>
+</a>
+
+
+<dl>
+
+
+<dt><a name="fB0_0"><b>SYSINFO_INIT (r7=0)</b></a></dt>
+
+
+<dd>
+<p>Prepares the other two SYSINFO calls for use by copying the
+	relevant data from the system flashrom into
+	<tt>8C000068-8C00007F</tt>.  Always call this function before
+	using the other two calls.</p>
+
+
+<p>Args: none</p>
+
+
+<p>Returns: zero</p>
+
+</dd>
+
+
+
+<dt><a name="fB0_2"><b>SYSINFO_ICON (r7=2)</b></a></dt>
+
+
+<dd>
+<p>Read an icon from the flashrom.  The format those icons are in
+	is not known.
+	<a href="#fB0_0">SYSINFO_INIT</a> must have been called first.</p>
+
+
+<p>Args: 
+<ul>
+
+<li><tt>r4</tt> = icon number (0-9, but only 5-9 seems to really
+	be icons)</li>
+
+<li><tt>r5</tt> = destination buffer (704 bytes
+	  in size)</li>
+
+</ul>
+</p>
+
+
+
+<p>Returns: number of read bytes if successful, negative if read failed</p>
+
+</dd>
+
+
+
+<dt><a name="fB0_3"><b>SYSINFO_ID (r7=3)</b></a></dt>
+
+
+<dd>
+<p>Query the unique 64 bit ID number of this Dreamcast.
+	<a href="#fB0_0">SYSINFO_INIT</a> must have been called first.</p>
+
+
+<p>Args: none</p>
+
+
+<p>Returns: A pointer to where the ID is stored as 8 contiguous bytes</p>
+
+</dd>
+
+
+</dl>
+
+
+
+<a name="vecB4">
+<p><img height="23" style="border: none;" src="/_internal/graphic_text!0/hlcfhu1cyw2cyj7k6g8xd5wjq7q2w5y$bo4xgl2ufuvg9inqpc8p7ek5mkzehyt" alt="Vector 8C0000B4 - ROMFONT" valign="top" width="242" /></p>
+</a>
+
+
+<dl>
+
+
+<dt><a name="fB4_0"><b>ROMFONT_ADDRESS (r1=0)</b></a></dt>
+
+
+<dd>
+<p>Returns the address of the ROM font.  The font is organized as
+	288 <i>narrow characters</i> (12 × 24 pixels), followed by
+	7078 <i>wide characters</i> (24 × 24 pixels), finally followed
+	by 129 <i>VMS icons</i> (32 × 32 pixels).  The total size of
+	the font is thus (288 * 12 * 24 / 8) + (7078 * 24 * 24 / 8) +
+	(129 * 32 *32 / 8) = (288 * 36) + (7078 * 72) + (129 * 128) =
+	10368 + 509616 + 16512 = 536496 bytes.  Note that the
+	<i>narrow characters</i> are stored as three nybbles per line,
+	so each pair of two lines occupy <i>three bytes</i> together.</p>
+
+      
+<p>The organization of the <i>narrow characters</i> are as
+	follows:
+	
+<table cellpadding="1" cellspacing="0" border="0" bgcolor="#808020">
+
+<tr>
+
+<td>
+<table cellpadding="3" cellspacing="2" border="0">
+
+<tr>
+<th bgcolor="#404000">Position</th><th bgcolor="#404000">Glyphs</th>
+</tr>
+
+<tr>
+
+<td bgcolor="#404000">0</td>
+
+<td bgcolor="#404000">Overbar (¯)</td>
+
+</tr>
+
+<tr>
+
+<td bgcolor="#404000">1-94</td>
+
+<td bgcolor="#404000">ASCII characters 33-126</td>
+
+</tr>
+
+<tr>
+
+<td bgcolor="#404000">95</td>
+
+<td bgcolor="#404000">Yen (¥)</td>
+
+</tr>
+
+<tr>
+
+<td bgcolor="#404000">96-191</td>
+
+<td bgcolor="#404000">ISO-8859-1 characters 160-255</td>
+
+</tr>
+
+<tr>
+
+<td bgcolor="#404000">192-287</td>
+
+<td bgcolor="#404000">JISX-0201 characters 160-255</td>
+
+</tr>
+
+</table>
+</td>
+
+</tr>
+
+</table>
+ (As there is no glyph for ASCII space, use glyph 96 =
+  ISO-8859-1 unbreakable space instead.)</p>
+
+      
+<p>The organization of the <i>wide characters</i> are as
+	follows (a <i>row</i> is 94 characters):
+	
+<table cellpadding="1" cellspacing="0" border="0" bgcolor="#808020">
+
+<tr>
+
+<td>
+<table cellpadding="3" cellspacing="2" border="0">
+
+<tr>
+<th bgcolor="#404000">Position</th><th bgcolor="#404000">Glyphs</th>
+</tr>
+
+<tr>
+
+<td bgcolor="#404000">0-657</td>
+
+<td bgcolor="#404000">JISX-0208 row 33-39</td>
+
+</tr>
+
+<tr>
+
+<td bgcolor="#404000">658-7049</td>
+
+<td bgcolor="#404000">JISX-0208 row 48-115</td>
+
+</tr>
+
+<tr>
+
+<td bgcolor="#404000">7050-7055</td>
+
+<td bgcolor="#404000">JISX-0208 row 116 (first 6 characters)</td>
+
+</tr>
+
+<tr>
+
+<td bgcolor="#404000">7056-7077</td>
+
+<td bgcolor="#404000">Dreamcast specific glyphs (A,B,X,Y,
+	direction arrows, etc.)</td>
+
+</tr>
+
+</table>
+</td>
+
+</tr>
+
+</table>
+</p>
+
+      
+<p>The organization of the <i>VMS icons</i> are as
+	follows:
+	
+<table cellpadding="1" cellspacing="0" border="0" bgcolor="#808020">
+
+<tr>
+
+<td>
+<table cellpadding="3" cellspacing="2" border="0">
+
+<tr>
+<th bgcolor="#404000">Position</th><th bgcolor="#404000">Glyphs</th>
+</tr>
+
+<tr>
+
+<td bgcolor="#404000">0</td>
+
+<td bgcolor="#404000"><i>Invalid VMS</i> icon (circle + cross)</td>
+
+</tr>
+
+<tr>
+
+<td bgcolor="#404000">1-4</td>
+
+<td bgcolor="#404000">Hourglass animation</td>
+
+</tr>
+
+<tr>
+
+<td bgcolor="#404000">5-128</td>
+
+<td bgcolor="#404000">User selectable icons</td>
+
+</tr>
+
+</table>
+</td>
+
+</tr>
+
+</table>
+</p>
+
+
+<p>Args: none</p>
+
+
+<p>Returns: A pointer to the first narrow character</p>
+
+</dd>
+
+
+
+<dt><a name="fB4_1"><b>ROMFONT_LOCK (r1=1)</b></a></dt>
+
+
+<dd>
+<p>Tries to lock a mutex for exclusive access to the ROM font.
+      Quite why anyone would want to arbitrate for access to a
+      resource that resides in ROM is beyond me, but there you have
+      it...  The mutex is not checked by <a href="#fB4_0">ROMFONT_ADDRESS</a>,
+      only by this function.</p>
+
+
+<p>Args: none</p>
+
+
+<p>Returns: 0 if you got the mutex (unlock it with <a href="#fB4_2">ROMFONT_UNLOCK</a> when you're done), -1 if it
+      was already taken by someone else</p>
+
+</dd>
+
+
+
+<dt><a name="fB4_2"><b>ROMFONT_UNLOCK (r1=2)</b></a></dt>
+
+
+<dd>
+<p>Releases the mutex locked with <a href="#fB4_1">ROMFONT_LOCK</a>.
+      Only call this function if you actually got the mutex.</p>
+
+
+<p>Args: none</p>
+
+
+<p>Returns: <i>no return value</i></p>
+
+</dd>
+
+
+</dl>
+
+
+
+<a name="vecB8">
+<p><img height="23" style="border: none;" src="/_internal/graphic_text!0/hlcfhu1cyw2cyj7k6g8xd5wjq7q2w5y$e9nzr7zo1119ff8ptrsy1sd99temg7y" alt="Vector 8C0000B8 - FLASHROM" valign="top" width="250" /></p>
+</a>
+
+
+<dl>
+
+
+<dt><a name="fB8_0"><b>FLASHROM_INFO (r7=0)</b></a></dt>
+
+
+<dd>
+<p>Queries the extent of a single partition in the system
+	flashrom.</p>
+
+
+<p>Args: 
+<ul>
+
+<li><tt>r4</tt> = partition number (0-4)</li>
+
+	
+<li><tt>r5</tt> = pointer to two 32 bit integers to receive
+	  the result.  The first will be the offset of the partition
+	  start, in bytes from the start of the flashrom.  The second
+	  will be the size of the partition, in bytes.</li>
+
+</ul>
+</p>
+
+
+<p>Returns: zero if successful, -1 if no such partition exists</p>
+
+</dd>
+
+
+
+<dt><a name="fB8_1"><b>FLASHROM_READ (r7=1)</b></a></dt>
+
+
+<dd>
+<p>Read data from the system flashrom.</p>
+
+
+<p>Args: 
+<ul>
+
+<li><tt>r4</tt> = read start position, in bytes from the
+	  start of the flashrom</li>
+
+	
+<li><tt>r5</tt> = pointer to destination buffer</li>
+
+	
+<li><tt>r6</tt> = number of bytes to read</li>
+
+</ul>
+</p>
+
+
+<p>Returns: number of read bytes if successful, -1 if read failed</p>
+
+</dd>
+
+
+
+<dt><a name="fB8_2"><b>FLASHROM_WRITE (r7=2)</b></a></dt>
+
+
+<dd>
+<p>Write data to the system flashrom.  <strong>Important:</strong>
+      It is only possible to overwrite 1:s with 0:s, 0:s can not be
+	written back to 1:s.  General overwriting is therefore
+	<i>not</i> possible.  Only bytes containing all ones
+	(<tt>$FF</tt>) can be written with arbitrary values.</p>
+
+
+<p>Args: 
+<ul>
+
+<li><tt>r4</tt> = write start position, in bytes from the
+	  start of the flashrom</li>
+
+	
+<li><tt>r5</tt> = pointer to source buffer</li>
+
+	
+<li><tt>r6</tt> = number of bytes to write</li>
+
+</ul>
+</p>
+
+
+<p>Returns: number of written bytes if successful, -1 if write failed</p>
+
+</dd>
+
+
+
+<dt><a name="fB8_3"><b>FLASHROM_DELETE (r7=3)</b></a></dt>
+
+
+<dd>
+<p>Return a flashrom partition to all ones, so that it may be
+      rewritten.  <strong>Danger Will Robinson:</strong> ALL data in
+      the entire partition will be lost.</p>
+
+
+<p>Args: 
+<ul>
+
+<li><tt>r4</tt> = offset of the start of the partition
+	  you want to delete, in bytes from the start of the flashrom
+	</li>
+
+</ul>
+</p>
+
+
+<p>Returns: zero if successful, -1 if delete failed</p>
+
+</dd>
+
+
+</dl>
+
+
+
+
+<a name="vecBC">
+<p><img height="23" style="border: none;" src="/_internal/graphic_text!0/hlcfhu1cyw2cyj7k6g8xd5wjq7q2w5y$ddunhga4gqfw035lc26o0i8qdp4l740" alt="Vector 8C0000BC - MISC/GDROM" valign="top" width="271" /></p>
+</a>
+
+
+<dl>
+
+
+<dt><a name="fBC_0"><b>MISC_INIT (r6=-1, r7=0)</b></a></dt>
+
+
+<dd>
+<p>Initializes all the syscall vectors to their default values.</p>
+
+
+<p>Args: none</p>
+
+
+<p>Returns: zero</p>
+
+</dd>
+
+
+
+<dt><a name="fBC_1"><b>MISC_SETVECTOR (r6=-1, r7=1)</b></a></dt>
+
+
+<dd>
+<p>Sets/clears the handler for one of the eight superfunctions
+for this vector.  Setting a handler is only allowed if it not
+	currently set.</p>
+
+
+<p>Args: 
+<ul>
+
+<li><tt>r4</tt> = superfunction number (0-7)</li>
+
+	
+<li><tt>r5</tt> = pointer to handler function, or
+	  <tt>NULL</tt> to clear</li>
+
+</ul>
+</p>
+
+
+<p>Returns: zero if successful, -1 if setting/clearing the handler fails</p>
+
+</dd>
+
+
+
+<dt><a name="fC0_0"><b>GDROM_SEND_COMMAND (r6=0, r7=0)</b></a></dt>
+
+
+<dd>
+<p>Enqueue a command for the GDROM subsystem to execute.</p>
+
+
+<p>Args: 
+<ul>
+
+<li><tt>r4</tt> = command code</li>
+
+	
+<li><tt>r5</tt> = pointer to parameter block for the command,
+	  can be <tt>NULL</tt> if the command does not take parameters</li>
+
+</ul>
+</p>
+
+
+<p>Returns: a request id (&gt;=0) if successful, negative error code if failed</p>
+
+</dd>
+
+
+
+<dt><a name="fC0_1"><b>GDROM_CHECK_COMMAND (r6=0, r7=1)</b></a></dt>
+
+
+<dd>
+<p>Check if an enqueued command has completed.</p>
+
+
+<p>Args: 
+<ul>
+
+<li><tt>r4</tt> = request id</li>
+
+	
+<li><tt>r5</tt> = pointer to four 32 bit integers to receive
+	  extended status information.  The first is a generic error code.</li>
+
+</ul>
+</p>
+
+
+<p>Returns: 
+<ul>
+
+<li><tt>0</tt> - no such request active</li>
+
+	
+<li><tt>1</tt> - request is still being processed</li>
+
+	
+<li><tt>2</tt> - request has completed (if queried again, you
+	  will get a <tt>0</tt>)</li>
+
+	
+<li><tt>3</tt> - request was aborted(?)</li>
+
+	
+<li><tt>-1</tt> - request has failed (examine extended status
+	  information for cause of failure)</li>
+
+</ul>
+</p>
+
+</dd>
+
+
+
+<dt><a name="fC0_2"><b>GDROM_MAINLOOP (r6=0, r7=2)</b></a></dt>
+
+
+<dd>
+<p>In order for enqueued commands to get processed, this function
+	must be called a few times.  It can be called from a periodic
+	interrupt, or just keep calling it manually until
+	<a href="#fC0_1">GDROM_CHECK_COMMAND</a>
+	says that your command has stopped processing.</p>
+
+
+<p>Args: none</p>
+
+
+<p>Returns: <i>no return value</i></p>
+
+</dd>
+
+
+
+<dt><a name="fC0_3"><b>GDROM_INIT (r6=0, r7=3)</b></a></dt>
+
+
+<dd>
+<p>Initialize the GDROM subsystem.  Should be called before any
+	requests are enqueued.</p>
+
+
+<p>Args: none</p>
+
+
+<p>Returns: <i>no return value</i></p>
+
+</dd>
+
+
+
+<dt><a name="fC0_4"><b>GDROM_CHECK_DRIVE (r6=0, r7=4)</b></a></dt>
+
+
+<dd>
+<p>Checks the general condition of the drive.</p>
+
+
+<p>Args: 
+<ul>
+
+<li><tt>r4</tt> = pointer to two 32 bit integers, to
+	  receive the drive status.  The first is the current drive
+	  status, the second is the type of disc inserted (if any).</li>
+
+
+<table border="0">
+
+<tr>
+
+<td>
+<table cellpadding="1" cellspacing="0" border="0" bgcolor="#808020">
+
+<tr>
+
+<td>
+<table cellpadding="3" cellspacing="2" border="0">
+
+<tr>
+<th colspan="2" bgcolor="#404000">Drive status</th>
+</tr>
+
+<tr>
+
+<td bgcolor="#404000"><tt>0</tt></td>
+
+<td bgcolor="#404000">Drive is busy</td>
+
+</tr>
+
+<tr>
+
+<td bgcolor="#404000"><tt>1</tt></td>
+
+<td bgcolor="#404000">Drive is paused</td>
+
+</tr>
+
+<tr>
+
+<td bgcolor="#404000"><tt>2</tt></td>
+
+<td bgcolor="#404000">Drive is in standby</td>
+
+</tr>
+
+<tr>
+
+<td bgcolor="#404000"><tt>3</tt></td>
+
+<td bgcolor="#404000">Drive is playing</td>
+
+</tr>
+
+<tr>
+
+<td bgcolor="#404000"><tt>4</tt></td>
+
+<td bgcolor="#404000">Drive is seeking</td>
+
+</tr>
+
+<tr>
+
+<td bgcolor="#404000"><tt>5</tt></td>
+
+<td bgcolor="#404000">Drive is scanning</td>
+
+</tr>
+
+<tr>
+
+<td bgcolor="#404000"><tt>6</tt></td>
+
+<td bgcolor="#404000">Drive lid is open</td>
+
+</tr>
+
+<tr>
+
+<td bgcolor="#404000"><tt>7</tt></td>
+
+<td bgcolor="#404000">Lid is closed, but there is no disc</td>
+
+</tr>
+
+</table>
+</td>
+
+</tr>
+
+</table>
+</td>
+
+<td>    </td>
+
+<td>
+<table cellpadding="1" cellspacing="0" border="0" bgcolor="#808020">
+
+<tr>
+
+<td>
+<table cellpadding="3" cellspacing="2" border="0">
+
+<tr>
+<th colspan="2" bgcolor="#404000">Disk type</th>
+</tr>
+
+<tr>
+
+<td bgcolor="#404000"><tt>$00</tt></td>
+
+<td bgcolor="#404000">CDDA</td>
+
+</tr>
+
+<tr>
+
+<td bgcolor="#404000"><tt>$10</tt></td>
+
+<td bgcolor="#404000">CDROM</td>
+
+</tr>
+
+<tr>
+
+<td bgcolor="#404000"><tt>$20</tt></td>
+
+<td bgcolor="#404000">CDROM/XA</td>
+
+</tr>
+
+<tr>
+
+<td bgcolor="#404000"><tt>$30</tt></td>
+
+<td bgcolor="#404000">CDI</td>
+
+</tr>
+
+<tr>
+
+<td bgcolor="#404000"><tt>$80</tt></td>
+
+<td bgcolor="#404000">GDROM</td>
+
+</tr>
+
+</table>
+</td>
+
+</tr>
+
+</table>
+</td>
+
+</tr>
+
+</table>
+
+</ul>
+</p>
+
+
+<p>Returns: zero if successful, nonzero if failure</p>
+
+</dd>
+
+
+
+<dt><a name="fC0_8"><b>GDROM_ABORT_COMMAND (r6=0, r7=8)</b></a></dt>
+
+
+<dd>
+<p>Tries to abort a previously enqueued command.</p>
+
+
+<p>Args: 
+<ul>
+
+<li><tt>r4</tt> = request id</li>
+
+</ul>
+</p>
+
+
+<p>Returns: zero if successful, nonzero if failure</p>
+
+</dd>
+
+
+
+<dt><a name="fC0_9"><b>GDROM_RESET (r6=0, r7=9)</b></a></dt>
+
+
+<dd>
+<p>Resets the drive.</p>
+
+
+<p>Args: none</p>
+
+
+<p>Returns: <i>no return value</i></p>
+
+</dd>
+
+
+
+<dt><a name="fC0_10"><b>GDROM_SECTOR_MODE (r6=0, r7=10)</b></a></dt>
+
+
+<dd>
+<p>Sets/gets the sector format for read commands.</p>
+
+
+<p>Args: 
+<ul>
+
+<li><tt>r4</tt> = pointer to a struct of four 32 bit
+	integers containing new values, or to receive the old
+	values</li>
+
+<table cellpadding="1" cellspacing="0" border="0" bgcolor="#808020">
+
+<tr>
+
+<td>
+<table cellpadding="3" cellspacing="2" border="0">
+
+<tr>
+<th bgcolor="#404000">Field</th><th bgcolor="#404000">Function</th>
+</tr>
+
+<tr>
+
+<td bgcolor="#404000">0</td>
+
+<td bgcolor="#404000">Get/Set, if <tt>0</tt> the mode will be set, if
+	<tt>1</tt> it will be queried.</td>
+
+</tr>
+
+<tr>
+
+<td bgcolor="#404000">1</td>
+
+<td bgcolor="#404000">? (always 8192)</td>
+
+</tr>
+
+<tr>
+
+<td bgcolor="#404000">2</td>
+
+<td bgcolor="#404000">1024 = mode 1, 2048 = mode 2, 0 = auto detect</td>
+
+</tr>
+
+<tr>
+
+<td bgcolor="#404000">3</td>
+
+<td bgcolor="#404000">Sector size in bytes (normally 2048)</td>
+
+</tr>
+
+</table>
+</td>
+
+</tr>
+
+</table>
+
+</ul>
+</p>
+
+
+<p>Returns: zero if successful, -1 if failure</p>
+
+</dd>
+
+
+</dl>
+
+
+
+
+<hr>
+<a href="http://www.roxen.com/"><img height="40" alt="Powered by Roxen" src="/internal-roxen-power-small-white" border="0" width="40" align="right" /></a><a href="http://mc.pp.se/dc/">Dreamcast Programming</a> by <i><a href="mailto:marcus@mc.pp.se">Marcus Comstedt</a></i><br>
+
+<!-- Created: Sun Mar 11 17:50:00 MET 2001 -->
+<!-- hhmts start -->
+Last modified: Mon Mar 12 00:10:21 MET 2001
+<!-- hhmts end -->
+
+</top>
+</body>
+
+</html>
+

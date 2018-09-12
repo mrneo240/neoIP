@@ -1,0 +1,1081 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-gb" xml:lang="en-gb">
+<head>
+<link href="./mobiquo/smartbanner/appbanner.css" rel="stylesheet" type="text/css" media="screen" />
+<script type="text/javascript" src="./mobiquo/smartbanner/appbanner.js"></script>
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en-gb" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta name="resource-type" content="document" />
+<meta name="distribution" content="global" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+
+<title>DCEmulation &bull; View topic - Double Bufering using KOS?</title>
+
+
+
+<link rel="stylesheet" href="./styles/subsilver2/theme/stylesheet.css" type="text/css" />
+
+<script type="text/javascript">
+// <![CDATA[
+
+
+function popup(url, width, height, name)
+{
+	if (!name)
+	{
+		name = '_popup';
+	}
+
+	window.open(url.replace(/&amp;/g, '&'), name, 'height=' + height + ',resizable=yes,scrollbars=yes,width=' + width);
+	return false;
+}
+
+function jumpto()
+{
+	var page = prompt('Enter the page number you wish to go to:', '1');
+	var per_page = '';
+	var base_url = '';
+
+	if (page !== null && !isNaN(page) && page == Math.floor(page) && page > 0)
+	{
+		if (base_url.indexOf('?') == -1)
+		{
+			document.location.href = base_url + '?start=' + ((page - 1) * per_page);
+		}
+		else
+		{
+			document.location.href = base_url.replace(/&amp;/g, '&') + '&start=' + ((page - 1) * per_page);
+		}
+	}
+}
+
+/**
+* Find a member
+*/
+function find_username(url)
+{
+	popup(url, 760, 570, '_usersearch');
+	return false;
+}
+
+/**
+* Mark/unmark checklist
+* id = ID of parent container, name = name prefix, state = state [true/false]
+*/
+function marklist(id, name, state)
+{
+	var parent = document.getElementById(id);
+	if (!parent)
+	{
+		eval('parent = document.' + id);
+	}
+
+	if (!parent)
+	{
+		return;
+	}
+
+	var rb = parent.getElementsByTagName('input');
+	
+	for (var r = 0; r < rb.length; r++)
+	{
+		if (rb[r].name.substr(0, name.length) == name)
+		{
+			rb[r].checked = state;
+		}
+	}
+}
+
+
+
+// ]]>
+</script>
+
+<script type="text/javascript">
+// <![CDATA[
+	/**
+	* Resize too large images
+	*/
+	var reimg_maxWidth = 1000, reimg_maxHeight = 1000, reimg_relWidth = 0;
+	var reimg_swapPortrait = true;
+	var reimg_loadingImg = "./images/spacer.gif";
+	var reimg_loadingStyle = "width: 16px; height: 16px; background: url(./styles/subsilver2/imageset/icon_reimg_loading.gif) top left no-repeat; filter: Alpha(Opacity=45); opacity: .45;";
+	var reimg_loadingAlt = "Loading...";
+	
+	var reimg_autoLink = true;
+	
+	var reimg_zoomImg = "./images/spacer.gif";
+	var reimg_zoomStyle = "width: 18px; height: 15px; background: url(./styles/subsilver2/imageset/icon_reimg_zoom_in.gif) top left no-repeat; filter: Alpha(Opacity=45); opacity: .45;";
+	var reimg_zoomHover = "filter: Alpha(Opacity=90); opacity: .90;";
+	
+	var reimg_zoomAlt = "Zoom in (real dimensions: %1$d x %2$d)";
+	var reimg_zoomTarget = "_default";
+	var reimg_ajax_url = "http://dcemulation.org/phpBB/reimg/reimg_ajax.php";
+
+	function reimg(img, width, height)
+	{
+		if (window.reimg_version)
+		{
+			reimg_resize(img, width, height);
+		}
+	}
+// ]]>
+</script>
+
+<script type="text/javascript" src="./reimg/reimg.js"></script>
+
+	
+<style type="text/css" media="screen, projection">
+<!--
+	
+	.tablebg .tablebg .postbody .reimg-zoom { display: none; }
+	
+-->
+</style>
+	
+<script type="text/javascript">
+// <![CDATA[
+	/**
+	* Light box for resized images
+	*/
+	
+	var litebox_alt = "Zoom out";
+		
+	var litebox_style = "cursor: pointer;"
+		
+	var litebox_closeImg = "./images/spacer.gif";
+	var litebox_closeStyle = "width: 18px; height: 15px; background: url(./styles/subsilver2/imageset/icon_reimg_zoom_out.gif) top left no-repeat; filter: Alpha(Opacity=45); opacity: .45;";
+	var litebox_closeHover = reimg_zoomHover;
+	var litebox_closeAlt = "Zoom out";
+		
+	var litebox_rtl = false;
+	
+// ]]>
+</script>
+
+	
+<script type="text/javascript">
+// <![CDATA[
+	reimg_loading('./styles/subsilver2/imageset/icon_reimg_loading.gif');
+// ]]>
+</script>
+
+<link rel="icon" type="image/png" href="http://dcemulation.org/favicon.png" />
+</head>
+<body class="ltr">
+<script type="text/javascript">tapatalkDetect()</script>
+
+<a name="top"></a>
+
+<div id="wrapheader">
+
+	<div id="logodesc">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td><a href="./index.php"><img src="./styles/subsilver2/imageset/dclogo.png" alt="" title="" /></a></td>
+			<td width="100%" align="center"><h1>DCEmulation</h1><span class="gen">dreamcast development • homebrew software • hardware hacking • indie games • emulators • and more!</span><br><span class="gen"><a href="http://dcemulation.org/">Back to main site</a></span></td>
+		</tr>
+		</table>
+	</div>
+
+	<div id="menubar">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td class="genmed">
+				<a href="./ucp.php?mode=login"><img src="./styles/subsilver2/theme/images/icon_mini_login.gif" width="12" height="13" alt="*" /> Login</a>&nbsp; &nbsp;<a href="./ucp.php?mode=register"><img src="./styles/subsilver2/theme/images/icon_mini_register.gif" width="12" height="13" alt="*" /> Register</a>
+					
+			</td>
+			<td class="genmed" align="right">
+				<a href="./faq.php"><img src="./styles/subsilver2/theme/images/icon_mini_faq.gif" width="12" height="13" alt="*" /> FAQ</a>
+				&nbsp; &nbsp;<a href="./search.php"><img src="./styles/subsilver2/theme/images/icon_mini_search.gif" width="12" height="13" alt="*" /> Search</a>
+			</td>
+		</tr>
+		</table>
+	</div>
+
+	<div id="datebar">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td class="gensmall"></td>
+			<td class="gensmall" align="right">It is currently Mon Feb 26, 2018 1:14 am<br /></td>
+		</tr>
+		</table>
+	</div>
+
+</div>
+
+<div id="wrapcentre">
+
+	
+	<p class="searchbar">
+		<span style="float: left;"><a href="./search.php?search_id=unanswered">View unanswered posts</a> | <a href="./search.php?search_id=active_topics">View active topics</a></span>
+		
+	</p>
+	
+
+	<br style="clear: both;" />
+
+	<table class="tablebg" width="100%" cellspacing="1" cellpadding="0" style="margin-top: 5px;">
+	<tr>
+		<td class="row1">
+			<p class="breadcrumbs"><a href="./index.php">Board index</a> &#187; <a href="./viewforum.php?f=65">Programming and Development</a> &#187; <a href="./viewforum.php?f=29">Programming Discussion</a></p>
+			<p class="datetime">All times are UTC - 8 hours [ <abbr title="Daylight Saving Time">DST</abbr> ]</p>
+		</td>
+	</tr>
+	</table>
+
+	<br />
+
+<div id="pageheader">
+	<h2><a class="titles" href="./viewtopic.php?f=29&amp;t=43214">Double Bufering using KOS?</a></h2>
+
+
+</div>
+
+<br clear="all" /><br />
+
+<div id="pagecontent">
+
+	<table width="100%" cellspacing="1">
+	<tr>
+		<td align="left" valign="middle" nowrap="nowrap">
+		<a href="./posting.php?mode=post&amp;f=29"><img src="./styles/subsilver2/imageset/en/button_topic_new.gif" alt="Post new topic" title="Post new topic" /></a>&nbsp;<a href="./posting.php?mode=reply&amp;f=29&amp;t=43214"><img src="./styles/subsilver2/imageset/en/button_topic_reply.gif" alt="Reply to topic" title="Reply to topic" /></a>
+		</td>
+		
+			<td class="nav" valign="middle" nowrap="nowrap">&nbsp;Page <strong>1</strong> of <strong>1</strong><br /></td>
+			<td class="gensmall" nowrap="nowrap">&nbsp;[ 8 posts ]&nbsp;</td>
+			<td class="gensmall" width="100%" align="right" nowrap="nowrap"></td>
+		
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr>
+		<td class="cat">
+			<table width="100%" cellspacing="0">
+			<tr>
+				<td class="nav" nowrap="nowrap">&nbsp;
+				
+				</td>
+				<td class="nav" align="right" nowrap="nowrap"><a href="./viewtopic.php?f=29&amp;t=43214&amp;view=previous">Previous topic</a> | <a href="./viewtopic.php?f=29&amp;t=43214&amp;view=next">Next topic</a>&nbsp;</td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+
+	</table>
+
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	
+		<tr>
+			<th>Author</th>
+			<th>Message</th>
+		</tr>
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p420708"></a>
+				<b class="postauthor">			
+				<a href="./memberlist.php?mode=viewprofile&amp;u=16688">thesilent1</a>			
+			</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> <a href="#p420708">Double Bufering using KOS?</a></div><div style="float: right;"><a href="./viewtopic.php?p=420708#p420708"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Sun Dec 28, 2003 3:38 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">DCEmu Cool Newbie</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/Green2.gif" alt="DCEmu Cool Newbie" title="DCEmu Cool Newbie" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Thu Dec 25, 2003 8:32 am<br /><b>Posts:</b> 15
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Hey, first let me show you the program that's causing a problem:
+<br />
+<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">#define _arch_dreamcast<br /><br />#define PACK_PIXEL&#40;r,g,b&#41; &#40; &#40;&#40;r &amp; 0xF8&#41; &lt;&lt; 8&#41; | &#40;&#40;g &amp; 0xFC&#41; &lt;&lt; 3&#41; | &#40;b &gt;&gt; 3&#41; &#41;;<br />#define PLOT_PIXEL&#40;x,y,c&#41; if&#40; &#40;x&gt;=0&#41; &amp;&amp; &#40;x&lt;640&#41; &amp;&amp; &#40;y&gt;=0&#41; &amp;&amp; &#40;y&lt;480&#41; &#41; vram_s&#91;x+&#40;640*y&#41;&#93;=c;<br /><br />#include &lt;kos.h&gt;<br /><br />void clearScreen&#40;unsigned short int c&#41; &#123;<br />&nbsp; &nbsp;int x,y;<br /><br />&nbsp; &nbsp;for&#40;x=0;x&lt;640;x++&#41; &#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;for&#40;y=0;y&lt;480;y++&#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;vram_s&#91;x+&#40;640*y&#41;&#93;=c;<br />&nbsp; &nbsp;&#125;<br />&#125;<br /><br />KOS_INIT_FLAGS&#40;INIT_DEFAULT&#41;;<br /><br />int main&#40;int argc, char **argv&#41; &#123;<br />&nbsp; &nbsp;unsigned short int red=PACK_PIXEL&#40;255,0,0&#41;;<br />&nbsp; &nbsp;unsigned short int yellow=PACK_PIXEL&#40;255,255,0&#41;;<br />&nbsp; &nbsp;unsigned short int green=PACK_PIXEL&#40;0,255,0&#41;;<br />&nbsp; &nbsp;unsigned short int cyan=PACK_PIXEL&#40;0,255,255&#41;;<br />&nbsp; &nbsp;unsigned short int blue=PACK_PIXEL&#40;0,0,255&#41;;<br />&nbsp; &nbsp;unsigned short int magenta=PACK_PIXEL&#40;255,0,255&#41;;<br /><br />&nbsp; &nbsp;while&#40;1&#41; &#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;clearScreen&#40;red&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;clearScreen&#40;yellow&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;clearScreen&#40;green&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;clearScreen&#40;cyan&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;clearScreen&#40;blue&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;clearScreen&#40;magenta&#41;;<br />&nbsp; &nbsp;&#125;<br /><br />&nbsp; &nbsp;arch_reboot&#40;&#41;;<br />&#125;<br /></div>
+<br />
+<br />What that code does is flash through different colors. The problem I'm getting is that the screen isn't completly one color. It always has 4-5 bands of different colors quickly cycling through the screen. Is there a way (by still directly accessing the video RAM) to counter this?</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=16688"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=29&amp;p=420708"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p420787"></a>
+				<b class="postauthor">			
+				<a href="./memberlist.php?mode=viewprofile&amp;u=8018">toastman</a>			
+			</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> <a href="#p420787"></a></div><div style="float: right;"><a href="./viewtopic.php?p=420787#p420787"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Sun Dec 28, 2003 6:38 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Iron Fist of Justice</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/bk.jpg" alt="Iron Fist of Justice" title="Iron Fist of Justice" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=8018_1355336668.jpg" width="138" height="131" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sat Nov 10, 2001 2:08 am<br /><b>Posts:</b> 4933<br /><b>Location:</b> New Orleans
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">It's probably running too fast.
+<br />You are directly manipulating the VRAM without any consideration for the framerate of the display. What's probably happening is that the VRAM is changing faster than the raster can update the image, so the raster starts in on another color before getting all the way down the display.</div>
+
+					
+						<div class="postbody"><br />_________________<br />No signature.</div>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=8018"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=29&amp;p=420787"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p420824"></a>
+				<b class="postauthor">			
+				<a href="./memberlist.php?mode=viewprofile&amp;u=16688">thesilent1</a>			
+			</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> <a href="#p420824"></a></div><div style="float: right;"><a href="./viewtopic.php?p=420824#p420824"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Sun Dec 28, 2003 7:26 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">DCEmu Cool Newbie</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/Green2.gif" alt="DCEmu Cool Newbie" title="DCEmu Cool Newbie" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Thu Dec 25, 2003 8:32 am<br /><b>Posts:</b> 15
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Ok, I timed the program so that it changes color every second, but you can still see the screen refreshing (you can see a diagonal line quickly pass left to right). I think I'm out of sync with the raster, does anybody know of a way to sync with it? Here's the code:
+<br />
+<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">#define _arch_dreamcast<br /><br />#define PACK_PIXEL&#40;r,g,b&#41; &#40; &#40;&#40;r &amp; 0xF8&#41; &lt;&lt; 8&#41; | &#40;&#40;g &amp; 0xFC&#41; &lt;&lt; 3&#41; | &#40;b &gt;&gt; 3&#41; &#41;;<br />#define PLOT_PIXEL&#40;x,y,c&#41; if&#40; &#40;x&gt;=0&#41; &amp;&amp; &#40;x&lt;640&#41; &amp;&amp; &#40;y&gt;=0&#41; &amp;&amp; &#40;y&lt;480&#41; &#41; vram_s&#91;x+&#40;640*y&#41;&#93;=c;<br /><br />#include &lt;kos.h&gt;<br /><br />void clearScreen&#40;uint16 c&#41; &#123;<br />&nbsp; &nbsp;int x,y;<br /><br />&nbsp; &nbsp;for&#40;x=0;x&lt;640;x++&#41; &#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;for&#40;y=0;y&lt;480;y++&#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;vram_s&#91;x+&#40;640*y&#41;&#93;=c;<br />&nbsp; &nbsp;&#125;<br />&#125;<br /><br />void waitForRaster&#40;void&#41; &#123;<br />&nbsp; &nbsp;static uint8&nbsp; &nbsp;init=0;&nbsp; &nbsp;&nbsp; &nbsp;//bool doesn't work?<br />&nbsp; &nbsp;static uint32&nbsp; &nbsp;lastRefresh;<br />&nbsp; &nbsp;uint32&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;ms;<br />&nbsp; &nbsp;uint32&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;deltaTime=0;<br /><br />&nbsp; &nbsp;if&#40;init&lt;1&#41; &#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;timer_ms_gettime&#40;NULL,&amp;lastRefresh&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;init=1;<br />&nbsp; &nbsp;&#125;<br /><br />&nbsp; &nbsp;while&#40;deltaTime&lt;1000&#41;&nbsp; &#123;&nbsp; &nbsp;&nbsp; &nbsp;//wait for a second...<br />&nbsp; &nbsp;&nbsp; &nbsp;timer_ms_gettime&#40;NULL,&amp;ms&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;deltaTime=ms-lastRefresh;<br />&nbsp; &nbsp;&#125;<br /><br />&nbsp; &nbsp;lastRefresh=ms;<br />&#125;<br /><br />KOS_INIT_FLAGS&#40;INIT_DEFAULT&#41;;<br /><br />int main&#40;int argc, char **argv&#41; &#123;<br />&nbsp; &nbsp;uint16 red=PACK_PIXEL&#40;255,0,0&#41;;<br />&nbsp; &nbsp;uint16 yellow=PACK_PIXEL&#40;255,255,0&#41;;<br />&nbsp; &nbsp;uint16 green=PACK_PIXEL&#40;0,255,0&#41;;<br />&nbsp; &nbsp;uint16 cyan=PACK_PIXEL&#40;0,255,255&#41;;<br />&nbsp; &nbsp;uint16 blue=PACK_PIXEL&#40;0,0,255&#41;;<br />&nbsp; &nbsp;uint16 magenta=PACK_PIXEL&#40;255,0,255&#41;;<br /><br />&nbsp; &nbsp;while&#40;1&#41; &#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;waitForRaster&#40;&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;clearScreen&#40;red&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;waitForRaster&#40;&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;clearScreen&#40;yellow&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;waitForRaster&#40;&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;clearScreen&#40;green&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;waitForRaster&#40;&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;clearScreen&#40;cyan&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;waitForRaster&#40;&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;clearScreen&#40;blue&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;waitForRaster&#40;&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;clearScreen&#40;magenta&#41;;<br />&nbsp; &nbsp;&#125;<br /><br />&nbsp; &nbsp;arch_reboot&#40;&#41;;<br />&#125;<br /></div></div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=16688"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=29&amp;p=420824"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p420847"></a>
+				<b class="postauthor">			
+				<a href="./memberlist.php?mode=viewprofile&amp;u=8674">BlackAura</a>			
+			</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> <a href="#p420847"></a></div><div style="float: right;"><a href="./viewtopic.php?p=420847#p420847"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Sun Dec 28, 2003 8:22 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">DC Developer</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5redmedals.gif" alt="DC Developer" title="DC Developer" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sun Dec 30, 2001 8:02 am<br /><b>Posts:</b> 9951
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">There is a function to wait for the vertical blank period to begin.
+<br />
+<br />From kos-1.2.0/kernel/arch/dreamcast/include/dc/video.h:
+<br />
+<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">void vid_waitvbl&#40;&#41;;</div><br /><br />However, that's not actually double buffering. KOS does have support for double buffering, but none of the default video modes have multiple pages set up. The only way I've found to make it work involves screwing around with the internals of the video system, which I really don't like doing.<br /><br />There's two ways to do this. Either manipulate the hardware yourself (which I've done, and it was a mess), or try to make the video driver do it for you (which I've not tried, but should be a lot cleaner). The problem is that KOS provides no way to get a pointer the the back buffer, only the front buffer, which means you need to keep track of it yourself.<br /><br />Anyway, here's something that should work. It's not tested, so it might be a load of garbage...<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">uint16 *backbuffer_s;<br />uint32 *backbuffer_l;<br /><br />// Flip page<br />void dbuffer_flip&#40;&#41;<br />&#123;<br />&nbsp; &nbsp; // Copy the active page pointers to the backbuffer pointers<br />&nbsp; &nbsp; backbuffer_s = vram_s;<br />&nbsp; &nbsp; backbuffer_l = vram_l;<br /><br />&nbsp; &nbsp; // Wait for a vertical blank &#40;prevent tearing&#41;<br />&nbsp; &nbsp; vid_waitvbl&#40;&#41;;<br /><br />&nbsp; &nbsp; // Tell KOS to flip to the next page<br />&nbsp; &nbsp; vid_flip&#40;-1&#41;;<br />&#125;<br /><br />// Initialise double buffering<br />void dbuffer_init&#40;&#41;<br />&#123;<br />&nbsp; &nbsp; int fb_size;<br /><br />&nbsp; &nbsp; // Set the number of video pages to 2<br />&nbsp; &nbsp; vid_mode-&gt;fb_count = 2;<br /><br />&nbsp; &nbsp; // Calculate the size of a single page<br />&nbsp; &nbsp; fb_size = vid_mode-&gt;width * vid_mode-&gt;height;<br />&nbsp; &nbsp; switch&#40;vid_mode-&gt;pm&#41;<br />&nbsp; &nbsp; &#123;<br />&nbsp; &nbsp; &nbsp; &nbsp; case PM_RGB555:<br />&nbsp; &nbsp; &nbsp; &nbsp; case PM_RGB565:<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; fb_size *= 2;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;<br />&nbsp; &nbsp; &nbsp; &nbsp; case PM_RGB888:<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; fb_size *= 4;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;<br />&nbsp; &nbsp; &#125;<br /><br />&nbsp; &nbsp; // Set the start positions of pages 0 and 1<br />&nbsp; &nbsp; vid_mode-&gt;fb_base&#91;0&#93; = 0;<br />&nbsp; &nbsp; vid_mode-&gt;fb_base&#91;1&#93; = fb_size;<br /><br />&nbsp; &nbsp; // Empty video memory &#40;sets everything to black&#41;<br />&nbsp; &nbsp; vid_empty&#40;&#41;;<br /><br />&nbsp; &nbsp; // Perform a page flip<br />&nbsp; &nbsp; dbuffer_flip&#40;&#41;;<br />&#125;<br /></div><br /><br />That should work, I hope. To use it, call dbuffer_init() to set up double buffering. Then, do all your drawing to the backbuffer using the backbuffer_s and backbuffer_l pointers. When you're done, call dbuffer_flip() to flip the pages around. It'll wait until the next vertical blank period, then flip the pages.<br /><br />Highly inefficient, but it should work.<br /><br />If not, you can simulate double buffering, by drawing to an in-memory buffer, and copying the contents of that buffer over to video memory when you're done. In some cases, this can actually be faster, because main memory access is a lot faster than video memory access. Basically, you just allocate a chunk of RAM the same size as the framebuffer, then use store queues (or DMA, but that's a bit more difficult) to copy it into video RAM. This should do that:<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">uint16 *backbuffer_s = NULL;<br />uint32 *backbuffer_l = NULL;<br />static int fb_size = 0;<br /><br />void dbuffer_flip&#40;&#41;<br />&#123;<br />&nbsp; &nbsp; // Wait for a vertical blank &#40;prevent tearing&#41;<br />&nbsp; &nbsp; vid_waitvbl&#40;&#41;;<br /><br />&nbsp; &nbsp; // Copy the buffer over using store queues<br />&nbsp; &nbsp; sq_cpy&#40;vram_s, backbuffer_s, fb_size&#41;;<br />&#125;<br /><br />void dbuffer_init&#40;&#41;<br />&#123;<br />&nbsp; &nbsp; int nfb_size;<br /><br />&nbsp; &nbsp; // Calculate the size of a single page<br />&nbsp; &nbsp; nfb_size = vid_mode-&gt;width * vid_mode-&gt;height;<br />&nbsp; &nbsp; switch&#40;vid_mode-&gt;pm&#41;<br />&nbsp; &nbsp; &#123;<br />&nbsp; &nbsp; &nbsp; &nbsp; case PM_RGB555:<br />&nbsp; &nbsp; &nbsp; &nbsp; case PM_RGB565:<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; nfb_size *= 2;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;<br />&nbsp; &nbsp; &nbsp; &nbsp; case PM_RGB888:<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; nfb_size *= 4;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;<br />&nbsp; &nbsp; &#125;<br /><br />&nbsp; &nbsp; // If the video mode's changed, reallocate it<br />&nbsp; &nbsp; if&#40;nfb_size != fb_size&#41;<br />&nbsp; &nbsp; &#123;<br />&nbsp; &nbsp; &nbsp; &nbsp; free&#40;backbuffer_s&#41;;<br />&nbsp; &nbsp; &nbsp; &nbsp; backbuffer_s = backbuffer_l = NULL;<br />&nbsp; &nbsp; &#125;<br />&nbsp; &nbsp; fb_size = nfb_size;<br /><br />&nbsp; &nbsp; // Allocate and clear memory, if need be<br />&nbsp; &nbsp; if&#40;!backbuffer_s&#41;<br />&nbsp; &nbsp; &#123;<br />&nbsp; &nbsp; &nbsp; &nbsp; backbuffer_s = &#40;uint16 *&#41;malloc&#40;fb_size&#41;;<br />&nbsp; &nbsp; &nbsp; &nbsp; backbuffer_l = &#40;uint32 *&#41;backbuffer_s;<br />&nbsp; &nbsp; &nbsp; &nbsp; sq_set16&#40;backbuffer_s, 0, fb_size&#41;;<br />&nbsp; &nbsp; &#125;<br />&#125;</div>
+<br />
+<br />Again, that should work. Use it the same was as before.</div>
+
+					
+							<br /><br />
+							<span class="gensmall">Last edited by <a href="./memberlist.php?mode=viewprofile&amp;u=8674">BlackAura</a> on Sat Jan 03, 2004 11:05 pm, edited 1 time in total.</span>
+						<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=8674"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=29&amp;p=420847"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p421064"></a>
+				<b class="postauthor">			
+				<a href="./memberlist.php?mode=viewprofile&amp;u=16688">thesilent1</a>			
+			</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> <a href="#p421064"></a></div><div style="float: right;"><a href="./viewtopic.php?p=421064#p421064"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Mon Dec 29, 2003 6:59 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">DCEmu Cool Newbie</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/Green2.gif" alt="DCEmu Cool Newbie" title="DCEmu Cool Newbie" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Thu Dec 25, 2003 8:32 am<br /><b>Posts:</b> 15
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Okay, I basically did the same thing but only by using vid_set_start(). Here's the code:
+<br />
+<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">#define _arch_dreamcast<br /><br />#define PACK_PIXEL&#40;r,g,b&#41; &#40; &#40;&#40;r &amp; 0xF8&#41; &lt;&lt; 8&#41; | &#40;&#40;g &amp; 0xFC&#41; &lt;&lt; 3&#41; | &#40;b &gt;&gt; 3&#41; &#41;;<br />#define PLOT_PIXEL&#40;x,y,c&#41; if&#40; &#40;x&gt;=0&#41; &amp;&amp; &#40;x&lt;640&#41; &amp;&amp; &#40;y&gt;=0&#41; &amp;&amp; &#40;y&lt;480&#41; &#41; vram_s&#91;x+&#40;640*y&#41;&#93;=c;<br /><br />#include &lt;kos.h&gt;<br /><br />uint16* backBuffer=NULL;<br />uint16* frontBuffer=NULL;<br /><br />void clearScreen&#40;uint16 c&#41; &#123;<br />&nbsp; &nbsp;int x,y;<br /><br />&nbsp; &nbsp;for&#40;x=0;x&lt;640;x++&#41; &#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;for&#40;y=0;y&lt;480;y++&#41;<br />&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;*&#40;backBuffer+&#40;x+&#40;640*y&#41;&#41;&#41;=c;<br />&nbsp; &nbsp;&#125;<br />&#125;<br /><br />void initBuffers&#40;void&#41; &#123;<br />&nbsp; &nbsp;frontBuffer=vram_s;<br />&nbsp; &nbsp;backBuffer=&#40;frontBuffer+&#40;640*480&#41;&#41;;&nbsp; //dumb hack ill fix later<br /><br />&nbsp; &nbsp;vid_empty&#40;&#41;;<br /><br />&nbsp; &nbsp;vid_set_start&#40;backBuffer&#41;;<br /><br />&nbsp; &nbsp;vid_empty&#40;&#41;;<br /><br />&nbsp; &nbsp;vid_set_start&#40;frontBuffer&#41;;<br />&#125;<br /><br />void swapBuffers&#40;void&#41; &#123;<br />&nbsp; &nbsp;uint16* temp;<br />&nbsp; &nbsp;<br />&nbsp; &nbsp;temp=backBuffer;<br />&nbsp; &nbsp;backBuffer=frontBuffer;<br />&nbsp; &nbsp;frontBuffer=temp;<br />&nbsp; &nbsp;<br />&nbsp; &nbsp;vid_waitvbl&#40;&#41;;<br /><br />&nbsp; &nbsp;vid_set_start&#40;frontBuffer&#41;;<br />&#125;<br /><br /><br />KOS_INIT_FLAGS&#40;INIT_DEFAULT&#41;;<br /><br />int main&#40;int argc, char **argv&#41; &#123;<br />&nbsp; &nbsp;uint16 red=PACK_PIXEL&#40;255,0,0&#41;;<br />&nbsp; &nbsp;uint16 yellow=PACK_PIXEL&#40;255,255,0&#41;;<br />&nbsp; &nbsp;uint16 green=PACK_PIXEL&#40;0,255,0&#41;;<br />&nbsp; &nbsp;uint16 cyan=PACK_PIXEL&#40;0,255,255&#41;;<br />&nbsp; &nbsp;uint16 blue=PACK_PIXEL&#40;0,0,255&#41;;<br />&nbsp; &nbsp;uint16 magenta=PACK_PIXEL&#40;255,0,255&#41;;<br /><br />&nbsp; &nbsp;vid_set_mode&#40;DM_640x480,PM_RGB565&#41;;<br />&nbsp; &nbsp;initBuffers&#40;&#41;;<br /><br />&nbsp; &nbsp;while&#40;1&#41; &#123;<br />&nbsp; &nbsp;&nbsp; &nbsp;clearScreen&#40;red&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;swapBuffers&#40;&#41;;<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;clearScreen&#40;yellow&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;swapBuffers&#40;&#41;;<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;clearScreen&#40;green&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;swapBuffers&#40;&#41;;<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;clearScreen&#40;cyan&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;swapBuffers&#40;&#41;;<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;clearScreen&#40;blue&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;swapBuffers&#40;&#41;;<br /><br />&nbsp; &nbsp;&nbsp; &nbsp;clearScreen&#40;magenta&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;swapBuffers&#40;&#41;;<br />&nbsp; &nbsp;&#125;<br /><br />&nbsp; &nbsp;arch_reboot&#40;&#41;;<br />&#125;<br /></div>
+<br />
+<br />What I'm wondering now is if this is too risky... What does the DC use the memory I assigned to the backBuffer for (the memory located right after vram_s/vram_l) ? Or can I use it anyway I want? I don't really mind screwing with the hardware myself (I love it hehehe <img src="./images/smilies/icon_biggrin.gif" alt=":D" title="Very Happy" />) I'm just afraid it'll come back to bite me in the ass later.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=16688"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=29&amp;p=421064"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p421068"></a>
+				<b class="postauthor">			
+				<a href="./memberlist.php?mode=viewprofile&amp;u=8018">toastman</a>			
+			</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> <a href="#p421068"></a></div><div style="float: right;"><a href="./viewtopic.php?p=421068#p421068"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Mon Dec 29, 2003 7:27 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Iron Fist of Justice</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/bk.jpg" alt="Iron Fist of Justice" title="Iron Fist of Justice" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=8018_1355336668.jpg" width="138" height="131" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sat Nov 10, 2001 2:08 am<br /><b>Posts:</b> 4933<br /><b>Location:</b> New Orleans
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">I believe its used for storing textures.
+<br />It should be relatively safe to use if you aren't using the PVR for any 3D stuff.</div>
+
+					
+						<div class="postbody"><br />_________________<br />No signature.</div>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=8018"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=29&amp;p=421068"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p421074"></a>
+				<b class="postauthor">			
+				<a href="./memberlist.php?mode=viewprofile&amp;u=16688">thesilent1</a>			
+			</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> <a href="#p421074"></a></div><div style="float: right;"><a href="./viewtopic.php?p=421074#p421074"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Mon Dec 29, 2003 7:40 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">DCEmu Cool Newbie</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/Green2.gif" alt="DCEmu Cool Newbie" title="DCEmu Cool Newbie" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Thu Dec 25, 2003 8:32 am<br /><b>Posts:</b> 15
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle">toastman wrote:</div><div class="quotecontent">I believe its used for storing textures.<br />It should be relatively safe to use if you aren't using the PVR for any 3D stuff.</div>
+<br />
+<br />Excellent. Thanks for the help guys.  <img src="./images/smilies/icon_smile.gif" alt=":)" title="Smile" /></div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=16688"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=29&amp;p=421074"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p421075"></a>
+				<b class="postauthor">			
+				<a href="./memberlist.php?mode=viewprofile&amp;u=8674">BlackAura</a>			
+			</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> <a href="#p421075"></a></div><div style="float: right;"><a href="./viewtopic.php?p=421075#p421075"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Mon Dec 29, 2003 7:45 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">DC Developer</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5redmedals.gif" alt="DC Developer" title="DC Developer" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sun Dec 30, 2001 8:02 am<br /><b>Posts:</b> 9951
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Unless you enable the 3D hardware, the PVR memory is basically unused. You have the full 8MB of it to play with, and you can do pretty much whatever you like. You can't really do that if you're using the PVR, partially because the API won't let you without breaking it, and partly because the hardware won't let you.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=8674"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=29&amp;p=421075"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table width="100%" cellspacing="1" class="tablebg">
+	<tr align="center">
+		<td class="cat"><form name="viewtopic" method="post" action="./viewtopic.php?f=29&amp;t=43214"><span class="gensmall">Display posts from previous:</span> <select name="st" id="st"><option value="0" selected="selected">All posts</option><option value="1">1 day</option><option value="7">7 days</option><option value="14">2 weeks</option><option value="30">1 month</option><option value="90">3 months</option><option value="180">6 months</option><option value="365">1 year</option></select>&nbsp;<span class="gensmall">Sort by</span> <select name="sk" id="sk"><option value="a">Author</option><option value="t" selected="selected">Post time</option><option value="s">Subject</option></select> <select name="sd" id="sd"><option value="a" selected="selected">Ascending</option><option value="d">Descending</option></select>&nbsp;<input class="btnlite" type="submit" value="Go" name="sort" /></form></td>
+	</tr>
+	</table>
+	
+
+	<table width="100%" cellspacing="1">
+	<tr>
+		<td align="left" valign="middle" nowrap="nowrap">
+		<a href="./posting.php?mode=post&amp;f=29"><img src="./styles/subsilver2/imageset/en/button_topic_new.gif" alt="Post new topic" title="Post new topic" /></a>&nbsp;<a href="./posting.php?mode=reply&amp;f=29&amp;t=43214"><img src="./styles/subsilver2/imageset/en/button_topic_reply.gif" alt="Reply to topic" title="Reply to topic" /></a>
+		</td>
+		
+			<td class="nav" valign="middle" nowrap="nowrap">&nbsp;Page <strong>1</strong> of <strong>1</strong><br /></td>
+			<td class="gensmall" nowrap="nowrap">&nbsp;[ 8 posts ]&nbsp;</td>
+			<td class="gensmall" width="100%" align="right" nowrap="nowrap"></td>
+		
+	</tr>
+	</table>
+
+</div>
+
+
+<div id="pagefooter"></div>
+
+<br clear="all" />
+<table class="tablebg" width="100%" cellspacing="1" cellpadding="0" style="margin-top: 5px;">
+	<tr>
+		<td class="row1">
+			<p class="breadcrumbs"><a href="./index.php">Board index</a> &#187; <a href="./viewforum.php?f=65">Programming and Development</a> &#187; <a href="./viewforum.php?f=29">Programming Discussion</a></p>
+			<p class="datetime">All times are UTC - 8 hours [ <abbr title="Daylight Saving Time">DST</abbr> ]</p>
+		</td>
+	</tr>
+	</table>
+	<br clear="all" />
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr>
+		<td class="cat"><h4>Who is online</h4></td>
+	</tr>
+	<tr>
+		<td class="row1"><p class="gensmall">Users browsing this forum: No registered users and 1 guest</p></td>
+	</tr>
+	</table>
+
+
+<br clear="all" />
+
+<table width="100%" cellspacing="1">
+<tr>
+	<td width="40%" valign="top" nowrap="nowrap" align="left"></td>
+	<td align="right" valign="top" nowrap="nowrap"><span class="gensmall">You <strong>cannot</strong> post new topics in this forum<br />You <strong>cannot</strong> reply to topics in this forum<br />You <strong>cannot</strong> edit your posts in this forum<br />You <strong>cannot</strong> delete your posts in this forum<br />You <strong>cannot</strong> post attachments in this forum<br /></span></td>
+</tr>
+</table>
+
+<br clear="all" />
+
+<table width="100%" cellspacing="0">
+<tr>
+	<td><form method="get" name="search" action="./search.php"><span class="gensmall">Search for:</span> <input class="post" type="text" name="keywords" size="20" /> <input class="btnlite" type="submit" value="Go" /><input type="hidden" name="t" value="43214" />
+<input type="hidden" name="sf" value="msgonly" />
+</form></td>
+	<td align="right">
+	<form method="post" name="jumpbox" action="./viewforum.php" onsubmit="if(document.jumpbox.f.value == -1){return false;}">
+
+	<table cellspacing="0" cellpadding="0" border="0">
+	<tr>
+		<td nowrap="nowrap"><span class="gensmall">Jump to:</span>&nbsp;<select name="f" onchange="if(this.options[this.selectedIndex].value != -1){ document.forms['jumpbox'].submit() }">
+
+		
+			<option value="-1">Select a forum</option>
+		<option value="-1">------------------</option>
+			<option value="63">News</option>
+		
+			<option value="72">&nbsp; &nbsp;Front Page News and Forum Guidelines</option>
+		
+			<option value="58">&nbsp; &nbsp;&nbsp; &nbsp;Annual Poll Forum</option>
+		
+			<option value="64">Dreamcast Talk</option>
+		
+			<option value="34">&nbsp; &nbsp;Dreamcast Homebrew Software Discussion</option>
+		
+			<option value="30">&nbsp; &nbsp;&nbsp; &nbsp;Official DreamSNES Forum</option>
+		
+			<option value="25">&nbsp; &nbsp;&nbsp; &nbsp;bleemcast! Archive</option>
+		
+			<option value="37">&nbsp; &nbsp;&nbsp; &nbsp;Art, Skins, and Covers</option>
+		
+			<option value="36">&nbsp; &nbsp;Dreamcast Gaming and Emulation</option>
+		
+			<option value="81">&nbsp; &nbsp;&nbsp; &nbsp;Dumpcast Project Forum</option>
+		
+			<option value="80">&nbsp; &nbsp;&nbsp; &nbsp;Official Earthcall Planet Ring Server Forum</option>
+		
+			<option value="31">&nbsp; &nbsp;Hardware Hacking and Repair</option>
+		
+			<option value="79">Hosted Forums</option>
+		
+			<option value="75">&nbsp; &nbsp;Official Sylverant PSO Server Forum</option>
+		
+			<option value="83">&nbsp; &nbsp;&nbsp; &nbsp;PSO Gameplay</option>
+		
+			<option value="86">&nbsp; &nbsp;Official Reicast Discussion Forum</option>
+		
+			<option value="65">Programming and Development</option>
+		
+			<option value="29" selected="selected">&nbsp; &nbsp;Programming Discussion</option>
+		
+			<option value="45">&nbsp; &nbsp;Developmental Ideas</option>
+		
+			<option value="14">&nbsp; &nbsp;First Person Shooters Development</option>
+		
+			<option value="59">&nbsp; &nbsp;Beats of Rage Development</option>
+		
+			<option value="66">Other Stuff</option>
+		
+			<option value="35">&nbsp; &nbsp;Off-Topic Forum</option>
+		
+			<option value="26">&nbsp; &nbsp;Gaming Forum</option>
+		
+			<option value="78">&nbsp; &nbsp;&nbsp; &nbsp;Dreamcast Gaming Discussion</option>
+		
+			<option value="54">&nbsp; &nbsp;/dev/null</option>
+		
+
+		</select>&nbsp;<input class="btnlite" type="submit" value="Go" /></td>
+	</tr>
+	</table>
+
+	</form>
+</td>
+</tr>
+</table>
+
+<img src="./cron.php?cron_type=tidy_sessions" width="1" height="1" alt="cron" />
+</div>
+
+<div id="wrapfooter">
+	
+	<span class="copyright">Powered by <a href="https://www.phpbb.com/">phpBB</a>&reg; Forum Software &copy; phpBB Group
+	</span>
+</div>
+
+</body>
+</html>

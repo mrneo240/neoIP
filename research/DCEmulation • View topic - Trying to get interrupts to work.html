@@ -1,0 +1,1478 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-gb" xml:lang="en-gb">
+<head>
+<link href="./mobiquo/smartbanner/appbanner.css" rel="stylesheet" type="text/css" media="screen" />
+<script type="text/javascript" src="./mobiquo/smartbanner/appbanner.js"></script>
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en-gb" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta name="resource-type" content="document" />
+<meta name="distribution" content="global" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+
+<title>DCEmulation &bull; View topic - Trying to get interrupts to work</title>
+
+
+
+<link rel="stylesheet" href="./styles/subsilver2/theme/stylesheet.css" type="text/css" />
+
+<script type="text/javascript">
+// <![CDATA[
+
+
+function popup(url, width, height, name)
+{
+	if (!name)
+	{
+		name = '_popup';
+	}
+
+	window.open(url.replace(/&amp;/g, '&'), name, 'height=' + height + ',resizable=yes,scrollbars=yes,width=' + width);
+	return false;
+}
+
+function jumpto()
+{
+	var page = prompt('Enter the page number you wish to go to:', '1');
+	var per_page = '';
+	var base_url = '';
+
+	if (page !== null && !isNaN(page) && page == Math.floor(page) && page > 0)
+	{
+		if (base_url.indexOf('?') == -1)
+		{
+			document.location.href = base_url + '?start=' + ((page - 1) * per_page);
+		}
+		else
+		{
+			document.location.href = base_url.replace(/&amp;/g, '&') + '&start=' + ((page - 1) * per_page);
+		}
+	}
+}
+
+/**
+* Find a member
+*/
+function find_username(url)
+{
+	popup(url, 760, 570, '_usersearch');
+	return false;
+}
+
+/**
+* Mark/unmark checklist
+* id = ID of parent container, name = name prefix, state = state [true/false]
+*/
+function marklist(id, name, state)
+{
+	var parent = document.getElementById(id);
+	if (!parent)
+	{
+		eval('parent = document.' + id);
+	}
+
+	if (!parent)
+	{
+		return;
+	}
+
+	var rb = parent.getElementsByTagName('input');
+	
+	for (var r = 0; r < rb.length; r++)
+	{
+		if (rb[r].name.substr(0, name.length) == name)
+		{
+			rb[r].checked = state;
+		}
+	}
+}
+
+
+
+// ]]>
+</script>
+
+<script type="text/javascript">
+// <![CDATA[
+	/**
+	* Resize too large images
+	*/
+	var reimg_maxWidth = 1000, reimg_maxHeight = 1000, reimg_relWidth = 0;
+	var reimg_swapPortrait = true;
+	var reimg_loadingImg = "./images/spacer.gif";
+	var reimg_loadingStyle = "width: 16px; height: 16px; background: url(./styles/subsilver2/imageset/icon_reimg_loading.gif) top left no-repeat; filter: Alpha(Opacity=45); opacity: .45;";
+	var reimg_loadingAlt = "Loading...";
+	
+	var reimg_autoLink = true;
+	
+	var reimg_zoomImg = "./images/spacer.gif";
+	var reimg_zoomStyle = "width: 18px; height: 15px; background: url(./styles/subsilver2/imageset/icon_reimg_zoom_in.gif) top left no-repeat; filter: Alpha(Opacity=45); opacity: .45;";
+	var reimg_zoomHover = "filter: Alpha(Opacity=90); opacity: .90;";
+	
+	var reimg_zoomAlt = "Zoom in (real dimensions: %1$d x %2$d)";
+	var reimg_zoomTarget = "_default";
+	var reimg_ajax_url = "http://dcemulation.org/phpBB/reimg/reimg_ajax.php";
+
+	function reimg(img, width, height)
+	{
+		if (window.reimg_version)
+		{
+			reimg_resize(img, width, height);
+		}
+	}
+// ]]>
+</script>
+
+<script type="text/javascript" src="./reimg/reimg.js"></script>
+
+	
+<style type="text/css" media="screen, projection">
+<!--
+	
+	.tablebg .tablebg .postbody .reimg-zoom { display: none; }
+	
+-->
+</style>
+	
+<script type="text/javascript">
+// <![CDATA[
+	/**
+	* Light box for resized images
+	*/
+	
+	var litebox_alt = "Zoom out";
+		
+	var litebox_style = "cursor: pointer;"
+		
+	var litebox_closeImg = "./images/spacer.gif";
+	var litebox_closeStyle = "width: 18px; height: 15px; background: url(./styles/subsilver2/imageset/icon_reimg_zoom_out.gif) top left no-repeat; filter: Alpha(Opacity=45); opacity: .45;";
+	var litebox_closeHover = reimg_zoomHover;
+	var litebox_closeAlt = "Zoom out";
+		
+	var litebox_rtl = false;
+	
+// ]]>
+</script>
+
+	
+<script type="text/javascript">
+// <![CDATA[
+	reimg_loading('./styles/subsilver2/imageset/icon_reimg_loading.gif');
+// ]]>
+</script>
+
+<link rel="icon" type="image/png" href="http://dcemulation.org/favicon.png" />
+</head>
+<body class="ltr">
+<script type="text/javascript">tapatalkDetect()</script>
+
+<a name="top"></a>
+
+<div id="wrapheader">
+
+	<div id="logodesc">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td><a href="./index.php"><img src="./styles/subsilver2/imageset/dclogo.png" alt="" title="" /></a></td>
+			<td width="100%" align="center"><h1>DCEmulation</h1><span class="gen">dreamcast development • homebrew software • hardware hacking • indie games • emulators • and more!</span><br><span class="gen"><a href="http://dcemulation.org/">Back to main site</a></span></td>
+		</tr>
+		</table>
+	</div>
+
+	<div id="menubar">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td class="genmed">
+				<a href="./ucp.php?mode=login"><img src="./styles/subsilver2/theme/images/icon_mini_login.gif" width="12" height="13" alt="*" /> Login</a>&nbsp; &nbsp;<a href="./ucp.php?mode=register"><img src="./styles/subsilver2/theme/images/icon_mini_register.gif" width="12" height="13" alt="*" /> Register</a>
+					
+			</td>
+			<td class="genmed" align="right">
+				<a href="./faq.php"><img src="./styles/subsilver2/theme/images/icon_mini_faq.gif" width="12" height="13" alt="*" /> FAQ</a>
+				&nbsp; &nbsp;<a href="./search.php"><img src="./styles/subsilver2/theme/images/icon_mini_search.gif" width="12" height="13" alt="*" /> Search</a>
+			</td>
+		</tr>
+		</table>
+	</div>
+
+	<div id="datebar">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td class="gensmall"></td>
+			<td class="gensmall" align="right">It is currently Thu Feb 22, 2018 9:52 pm<br /></td>
+		</tr>
+		</table>
+	</div>
+
+</div>
+
+<div id="wrapcentre">
+
+	
+	<p class="searchbar">
+		<span style="float: left;"><a href="./search.php?search_id=unanswered">View unanswered posts</a> | <a href="./search.php?search_id=active_topics">View active topics</a></span>
+		
+	</p>
+	
+
+	<br style="clear: both;" />
+
+	<table class="tablebg" width="100%" cellspacing="1" cellpadding="0" style="margin-top: 5px;">
+	<tr>
+		<td class="row1">
+			<p class="breadcrumbs"><a href="./index.php">Board index</a> &#187; <a href="./viewforum.php?f=65">Programming and Development</a> &#187; <a href="./viewforum.php?f=29">Programming Discussion</a></p>
+			<p class="datetime">All times are UTC - 8 hours [ <abbr title="Daylight Saving Time">DST</abbr> ]</p>
+		</td>
+	</tr>
+	</table>
+
+	<br />
+
+<div id="pageheader">
+	<h2><a class="titles" href="./viewtopic.php?f=29&amp;t=104038">Trying to get interrupts to work</a></h2>
+
+
+</div>
+
+<br clear="all" /><br />
+
+<div id="pagecontent">
+
+	<table width="100%" cellspacing="1">
+	<tr>
+		<td align="left" valign="middle" nowrap="nowrap">
+		<a href="./posting.php?mode=post&amp;f=29"><img src="./styles/subsilver2/imageset/en/button_topic_new.gif" alt="Post new topic" title="Post new topic" /></a>&nbsp;<a href="./posting.php?mode=reply&amp;f=29&amp;t=104038"><img src="./styles/subsilver2/imageset/en/button_topic_reply.gif" alt="Reply to topic" title="Reply to topic" /></a>
+		</td>
+		
+			<td class="nav" valign="middle" nowrap="nowrap">&nbsp;Page <strong>1</strong> of <strong>1</strong><br /></td>
+			<td class="gensmall" nowrap="nowrap">&nbsp;[ 13 posts ]&nbsp;</td>
+			<td class="gensmall" width="100%" align="right" nowrap="nowrap"></td>
+		
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr>
+		<td class="cat">
+			<table width="100%" cellspacing="0">
+			<tr>
+				<td class="nav" nowrap="nowrap">&nbsp;
+				
+				</td>
+				<td class="nav" align="right" nowrap="nowrap"><a href="./viewtopic.php?f=29&amp;t=104038&amp;view=previous">Previous topic</a> | <a href="./viewtopic.php?f=29&amp;t=104038&amp;view=next">Next topic</a>&nbsp;</td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+
+	</table>
+
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	
+		<tr>
+			<th>Author</th>
+			<th>Message</th>
+		</tr>
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p1050719"></a>
+				<b class="postauthor" style="color: #00AA00">			
+				<a href="./memberlist.php?mode=viewprofile&amp;u=32942" style="color: #00AA00;" class="username-coloured">bogglez</a>			
+			</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> <a href="#p1050719">Trying to get interrupts to work</a></div><div style="float: right;"><a href="./viewtopic.php?p=1050719#p1050719"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Thu Jul 07, 2016 3:49 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Moderator</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5silvermedals.gif" alt="Moderator" title="Moderator" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=32942_1414274460.jpg" width="138" height="138" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sun Apr 20, 2014 7:45 am<br /><b>Posts:</b> 567
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Hi,<br /><br />I've been reading the SH4 manual and tried to get into assembly a bit. I'm having issues with understanding how interrupts are set up.<br />I can draw to the screen, but I do not receive any interrupts whatsoever.<br />Curiously, if I replace the nop after the jump to main with &quot;ldc r1,sr&quot;, &quot;1&quot; is spammed by my interrupt handler, but I cannot see any graphics on screen anymore and my print statements from main() also don't show up.<br /><br />Does anyone have any idea what I might be doing wrong?<br /><br />start.s:<br /><div style="padding: 3px; background-color: #FFFFFF; border: 1px solid #d8d8d8; font-size: 1em;"><div style="text-transform: uppercase; border-bottom: 0px; margin-bottom: 3px; font-size: 0.8em; font-weight: bold; display: block;"><span onClick="if (this.parentNode.parentNode.getElementsByTagName('div')[1].style.display != '') {  this.parentNode.parentNode.getElementsByTagName('div')[1].style.display = ''; this.innerHTML = '<b>Spoiler: </b><a href=\'#\' onClick=\'return false;\'>hide</a>'; } else { this.parentNode.parentNode.getElementsByTagName('div')[1].style.display = 'none'; this.innerHTML = '<b>Spoiler: </b><a href=\'#\' onClick=\'return false;\'>show</a>'; }" /><b>Spoiler: </b><a href="#" onClick="return false;">show</a></span></div><div style="display: none;"><div class="codetitle"><b>Code:</b></div><div class="codecontent">.globl start<br /><br />.extern main<br />.extern ak_interrupt_handler<br /><br />.text<br />.align 2<br />start: ! Entry point. Sets up the cache then jumps to main.<br />&nbsp; &nbsp;! Make the program counter a P2 memory area address to enter privileged mode.<br />&nbsp; &nbsp;mov.l setup_cache_addr,r0<br />&nbsp; &nbsp;mov.l p2_mask,r1<br />&nbsp; &nbsp;or r1,r0<br />&nbsp; &nbsp;jmp @r0<br />&nbsp; &nbsp;nop<br /><br />setup_cache: ! Enables the cache. Must be called in priviledged mode.<br />&nbsp; &nbsp;! Now that we are in P2, it&#39;s safe to enable the cache<br />&nbsp; &nbsp;mov.l ccr_addr,r0<br />&nbsp; &nbsp;mov.w ccr_data,r1<br />&nbsp; &nbsp;mov.l r1,@r0&nbsp; &nbsp; &nbsp; ! After changing CCR, eight instructions must be executed before it&#39;s safe to enter a cached area such as P1<br />&nbsp; &nbsp;mov.l vbr_addr,r0 ! 1 Set up interrupt table<br />&nbsp; &nbsp;ldc r0,vbr&nbsp; &nbsp; &nbsp; &nbsp; ! 2<br />&nbsp; &nbsp;mov.l initaddr,r0 ! 3<br />&nbsp; &nbsp;mov.l stkaddr,r15 ! 4 Set up stack<br />&nbsp; &nbsp;nop&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;! 5<br />&nbsp; &nbsp;nop&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;! 6<br />&nbsp; &nbsp;nop&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;! 7<br />&nbsp; &nbsp;nop&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;! 8<br />&nbsp; &nbsp;jmp @r0<br />&nbsp; &nbsp;nop<br /><br />init:<br />&nbsp; &nbsp;mov.l init_sr,r1&nbsp; ! Enable interrupts<br />&nbsp; &nbsp;ldc r1,sr<br />&nbsp; &nbsp;mov.l mainaddr,r0 ! Jump to main in C code<br />&nbsp; &nbsp;jsr @r0<br />&nbsp; &nbsp;nop<br /><br />interrupt_handler:<br />&nbsp; &nbsp;mov.l inthandleraddr,r0<br />&nbsp; &nbsp;jsr @r0<br />&nbsp; &nbsp;nop<br />&nbsp; &nbsp;rte<br />&nbsp; &nbsp;nop<br /><br />.align 4<br />vbr_addr:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.long vma_table<br />p2_mask:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .long 0xa0000000<br />setup_cache_addr: .long setup_cache<br />initaddr:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.long init<br />mainaddr:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.long _main<br />inthandleraddr:&nbsp; &nbsp;.long _ak_interrupt_handler<br />ccr_addr:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.long 0xff00001c<br />init_sr:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .long 0x60000000 ! MD,RB<br />stkaddr:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .long stack<br />ccr_data:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.word 0x0909<br /><br /><br />.align 2<br />vma_table:<br />&nbsp; &nbsp;.space 0x100<br />vma_table_100: ! General exceptions<br />&nbsp; &nbsp;mov #1,r4<br />&nbsp; &nbsp;bra interrupt_handler<br />&nbsp; &nbsp;.space 0x300 - 4<br />vma_table_400: ! MMU exceptions<br />&nbsp; &nbsp;mov #2,r4<br />&nbsp; &nbsp;bra interrupt_handler<br />&nbsp; &nbsp;.space 0x200 - 4<br />vma_table_600: ! IRQs<br />&nbsp; &nbsp;mov #3,r4<br />&nbsp; &nbsp;bra interrupt_handler<br />&nbsp; &nbsp;nop<br /><br />.align 4<br />.space 4096 ! 4kb stack<br />stack:<br /><br />.end<br /></div></div></div><br /><br />main.c<br /><div style="padding: 3px; background-color: #FFFFFF; border: 1px solid #d8d8d8; font-size: 1em;"><div style="text-transform: uppercase; border-bottom: 0px; margin-bottom: 3px; font-size: 0.8em; font-weight: bold; display: block;"><span onClick="if (this.parentNode.parentNode.getElementsByTagName('div')[1].style.display != '') {  this.parentNode.parentNode.getElementsByTagName('div')[1].style.display = ''; this.innerHTML = '<b>Spoiler: </b><a href=\'#\' onClick=\'return false;\'>hide</a>'; } else { this.parentNode.parentNode.getElementsByTagName('div')[1].style.display = 'none'; this.innerHTML = '<b>Spoiler: </b><a href=\'#\' onClick=\'return false;\'>show</a>'; }" /><b>Spoiler: </b><a href="#" onClick="return false;">show</a></span></div><div style="display: none;"><div class="codetitle"><b>Code:</b></div><div class="codecontent">void ak_interrupt_handler&#40;u32 code&#41; {<br />&nbsp; &nbsp;switch&#40;code&#41; {<br />&nbsp; &nbsp;&nbsp; &nbsp;case 1: puts&#40;&quot;1&quot;&#41;; break;<br />&nbsp; &nbsp;&nbsp; &nbsp;case 2: puts&#40;&quot;2&quot;&#41;; break;<br />&nbsp; &nbsp;&nbsp; &nbsp;case 3: puts&#40;&quot;3&quot;&#41;; break;<br />&nbsp; &nbsp;&nbsp; &nbsp;default: puts&#40;&quot;default&quot;&#41;;<br />&nbsp; &nbsp;}<br />}<br /><br />int main&#40;&#41; {<br />&nbsp; &nbsp;puts&#40;&quot;main&quot;&#41;;<br /><br />&nbsp; &nbsp;for&#40;;;&#41; {<br />&nbsp; &nbsp;&nbsp; &nbsp;ak_gfx_clear&#40;bg_color&#41;;<br />&nbsp; &nbsp;&nbsp; &nbsp;ak_gfx_draw_box&#40;10, 20, 50, 100, 0x3f0&#41;;<br />&nbsp; &nbsp;}<br />}<br /></div></div></div></div>
+
+					
+						<div class="postbody"><br />_________________<br />Wiki &amp; tutorials: <!-- m --><a class="postlink" href="http://dcemulation.org/?title=Development">http://dcemulation.org/?title=Development</a><!-- m --><br />Wiki feedback: <!-- l --><a class="postlink-local" href="http://dcemulation.org/phpBB/viewtopic.php?f=29&amp;t=103940">viewtopic.php?f=29&amp;t=103940</a><!-- l --><br />My libgl playground (not for production): <!-- m --><a class="postlink" href="https://bitbucket.org/bogglez/libgl15">https://bitbucket.org/bogglez/libgl15</a><!-- m --><br />My lxdream fork (with small fixes): <!-- m --><a class="postlink" href="https://bitbucket.org/bogglez/lxdream">https://bitbucket.org/bogglez/lxdream</a><!-- m --></div>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=32942"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=29&amp;p=1050719"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p1050720"></a>
+				<b class="postauthor">			
+				<a href="./memberlist.php?mode=viewprofile&amp;u=13916">nymus</a>			
+			</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> <a href="#p1050720">Re: Trying to get interrupts to work</a></div><div style="float: right;"><a href="./viewtopic.php?p=1050720#p1050720"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Thu Jul 07, 2016 5:09 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">DC Developer</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5redmedals.gif" alt="DC Developer" title="DC Developer" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue Feb 11, 2003 3:12 pm<br /><b>Posts:</b> 936<br /><b>Location:</b> In a Dream
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Hmm, I haven't done any interrupt handling myself, but at first glance, I see you are making considerations according to Section 5.8 (Restrictions) of the Programming manual...<br /><br />It looks like you should be okay but you don't &quot;nop&quot; in the delay slot after the first bra instruction. You put .space which, I guess just puts zeros there.<br /><br />For the math, I'd probably prefer something like .space 0x400 - (. - vma_table), assuming this works as expected.<br /><br />Again, no experience here, just throwing out a few suggestions <img src="./images/smilies/icon_e_smile.gif" alt=":)" title="Smile" /></div>
+
+					
+						<div class="postbody"><br />_________________<br />behold the mind
+<br />inspired by Dreamcast</div>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=13916"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=29&amp;p=1050720"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p1050721"></a>
+				<b class="postauthor" style="color: #00AA00">			
+				<a href="./memberlist.php?mode=viewprofile&amp;u=32942" style="color: #00AA00;" class="username-coloured">bogglez</a>			
+			</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> <a href="#p1050721">Re: Trying to get interrupts to work</a></div><div style="float: right;"><a href="./viewtopic.php?p=1050721#p1050721"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Thu Jul 07, 2016 5:39 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Moderator</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5silvermedals.gif" alt="Moderator" title="Moderator" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=32942_1414274460.jpg" width="138" height="138" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sun Apr 20, 2014 7:45 am<br /><b>Posts:</b> 567
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Thanks for your reply, nymus.<br /><br /><div class="quotetitle">nymus wrote:</div><div class="quotecontent">Hmm, I haven't done any interrupt handling myself, but at first glance, I see you are making considerations according to Section 5.8 (Restrictions) of the Programming manual...<br /></div><br />My manual doesn't have a &quot;Section 5.8 Restrictions&quot;. I'm using the official manual by Renesas.<br /><br /><div class="quotetitle">nymus wrote:</div><div class="quotecontent">It looks like you should be okay but you don't &quot;nop&quot; in the delay slot after the first bra instruction. You put .space which, I guess just puts zeros there.<br /></div><br />Good catch. Somehow I assumed nop is 0, but it's not.. Fixed, but didn't solve the problem.</div>
+
+					
+						<div class="postbody"><br />_________________<br />Wiki &amp; tutorials: <!-- m --><a class="postlink" href="http://dcemulation.org/?title=Development">http://dcemulation.org/?title=Development</a><!-- m --><br />Wiki feedback: <!-- l --><a class="postlink-local" href="http://dcemulation.org/phpBB/viewtopic.php?f=29&amp;t=103940">viewtopic.php?f=29&amp;t=103940</a><!-- l --><br />My libgl playground (not for production): <!-- m --><a class="postlink" href="https://bitbucket.org/bogglez/libgl15">https://bitbucket.org/bogglez/libgl15</a><!-- m --><br />My lxdream fork (with small fixes): <!-- m --><a class="postlink" href="https://bitbucket.org/bogglez/lxdream">https://bitbucket.org/bogglez/lxdream</a><!-- m --></div>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=32942"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=29&amp;p=1050721"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p1050722"></a>
+				<b class="postauthor">			
+				<a href="./memberlist.php?mode=viewprofile&amp;u=13916">nymus</a>			
+			</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> <a href="#p1050722">Re: Trying to get interrupts to work</a></div><div style="float: right;"><a href="./viewtopic.php?p=1050722#p1050722"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Thu Jul 07, 2016 9:17 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">DC Developer</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5redmedals.gif" alt="DC Developer" title="DC Developer" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Tue Feb 11, 2003 3:12 pm<br /><b>Posts:</b> 936<br /><b>Location:</b> In a Dream
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">I've tried following the program flow and have a few observations:<br /><br />Handling procedure (INT is interrupt_handler in assembly):<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">f() &gt; INT &gt; ak_interrupt() &gt; RTS &gt; INT &gt; RTE &gt; f()<br /></div><br />- INT calls ak_interrupt using JSR so we are inside a &quot;new&quot; exception-handling context (overwritten PR, saved R15).<br />- We are not taking interrupts now. When ak_interrupt returns to us, PR and R15 have been clobbered by further function calls e.g. puts(). Their last value is probably at or just after the RTE instruction… I believe<br />- we &quot;did&quot; use PR during exception handling so a call to RTS without a proper JSR will come here<br />- e.g. gfx_clear() &gt; INT &gt; gfx_clear() &gt; RTS &gt; ???<br />- should we save PR during exception handling?<br />- Should we restore R15? (STC SGR, R15). Probably not important here.<br />- RTE unblocks exceptions.<br />- back to where we were<br /><br />Now following the actual program...<br /><br />startup<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">init() &gt; unblock &gt; INT &gt; init() &gt; ???<br /></div><br />main() might never be reached and the program would be infinitely stuck here. Suggest moving enable_intr inside main()...<br /><br />main loop<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">main() &gt; INT &gt; main()<br /></div><br />This looks okay. I'd just check the handler to make sure we can come back to main().<br /><br />Another issue could be that you are setting RN_BANK1 for normal code instead of RN_BANK0 when you unblock.<br />SR bits: 31 30 29 28 &gt; __ MD RB BL<br /><br />4 &gt; 0 1 0 0 &gt; Privileged+Bank0+unblock<br />6 &gt;  0 1 1 0 &gt; Privileged+Bank1+unblock<br /><br />When an interrupt happens, you overwrite everything because you are already using Bank1.<br /><br />At startup, KOS loads 0x500000F0 ( 0 1 0 1 ) which sets Privileged+Bank0+Block. I see KOS does an AND of 0xEFFFFF0F ( 1 1 1 0 ) in the kernel to enable interrupts which has a 1 for the Bank bit but I think this is just to preserve whatever the coder is using. This AND would still restore the CPU to Bank0 if that's what it was before the interrupt.<br /><br />I don't know how IMASK works.</div>
+
+					
+						<div class="postbody"><br />_________________<br />behold the mind
+<br />inspired by Dreamcast</div>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=13916"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=29&amp;p=1050722"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p1050725"></a>
+				<b class="postauthor">			
+				<a href="./memberlist.php?mode=viewprofile&amp;u=31525">Chilly Willy</a>			
+			</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> <a href="#p1050725">Re: Trying to get interrupts to work</a></div><div style="float: right;"><a href="./viewtopic.php?p=1050725#p1050725"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Thu Jul 07, 2016 10:13 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">DC Developer</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5redmedals.gif" alt="DC Developer" title="DC Developer" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Thu Aug 20, 2009 9:00 am<br /><b>Posts:</b> 414
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Interrupt handlers MUST save and restore ANY register that is used. In fact, your handler itself is walking on r0 and PR without saving and restoring them. In general, if you plan to use C/C++ code from interrupts, save and restore ALL registers, period. Well, you don't have to save the FP regs... because you should never use floating point inside an exception/interrupt unless that exception is fatal and you don't plan on returning to the regular program.<br /><br />Second, certain instructions cannot be placed in delay slots. See the hardware manual for details. Doing so results in an illegal delay slot instruction exception.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=31525"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=29&amp;p=1050725"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p1050797"></a>
+				<b class="postauthor" style="color: #00AA00">			
+				<a href="./memberlist.php?mode=viewprofile&amp;u=32942" style="color: #00AA00;" class="username-coloured">bogglez</a>			
+			</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> <a href="#p1050797">Re: Trying to get interrupts to work</a></div><div style="float: right;"><a href="./viewtopic.php?p=1050797#p1050797"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Fri Jul 15, 2016 8:56 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Moderator</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5silvermedals.gif" alt="Moderator" title="Moderator" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=32942_1414274460.jpg" width="138" height="138" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sun Apr 20, 2014 7:45 am<br /><b>Posts:</b> 567
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle">Chilly Willy wrote:</div><div class="quotecontent">Second, certain instructions cannot be placed in delay slots. See the hardware manual for details. Doing so results in an illegal delay slot instruction exception.</div><br />Something that had me confused is why ldc *,sr immediately after the jump leads to the interrupt handler being called, while before it won't. It seems like exception handling is on by default without changing sr (this seems to contradict the documentation?) and jmp followed by ldc *,sr is invalid, so the exception handler is called. Is that possible?<br />I need to get a better emulator, probably need to install Windows..<br /><br />And also, do any interrupts like vblank fire by default? Maybe my code was correct with ldc *,sr before jmp and I just didn't get any exceptions or interrupts. That would explain things..</div>
+
+					
+						<div class="postbody"><br />_________________<br />Wiki &amp; tutorials: <!-- m --><a class="postlink" href="http://dcemulation.org/?title=Development">http://dcemulation.org/?title=Development</a><!-- m --><br />Wiki feedback: <!-- l --><a class="postlink-local" href="http://dcemulation.org/phpBB/viewtopic.php?f=29&amp;t=103940">viewtopic.php?f=29&amp;t=103940</a><!-- l --><br />My libgl playground (not for production): <!-- m --><a class="postlink" href="https://bitbucket.org/bogglez/libgl15">https://bitbucket.org/bogglez/libgl15</a><!-- m --><br />My lxdream fork (with small fixes): <!-- m --><a class="postlink" href="https://bitbucket.org/bogglez/lxdream">https://bitbucket.org/bogglez/lxdream</a><!-- m --></div>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=32942"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=29&amp;p=1050797"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p1050799"></a>
+				<b class="postauthor">			
+				<a href="./memberlist.php?mode=viewprofile&amp;u=31525">Chilly Willy</a>			
+			</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> <a href="#p1050799">Re: Trying to get interrupts to work</a></div><div style="float: right;"><a href="./viewtopic.php?p=1050799#p1050799"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Fri Jul 15, 2016 10:05 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">DC Developer</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5redmedals.gif" alt="DC Developer" title="DC Developer" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Thu Aug 20, 2009 9:00 am<br /><b>Posts:</b> 414
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">KOS sets up a lot of stuff. Look at kos/kernel/arch/dreamcast/kernel/init.c - the standard kos start calls arch_main, which clears the bss, calls arch_auto_init, calls all the ctors, and then calls main(). The arch_auto_init does a lot of hardware setup.<br /><br />And in general, exceptions ALWAYS occur. Interrupts can be turned on or off, but exceptions generally can't unless specifically mentioned in the hardware manual. You have gotten the SH4 hardware and software manuals, right? They can be easily found online. If you're going to do any assembly level work, you need both.<br /><br />The way people &quot;disable&quot; exceptions is to put in an exception handler that ignores the exception. I think the default kos exception handlers do a kernel panic. See kos/kernel/arch/dreamcast/kernel/entry.s for exception and irq handlers. Oh, one thing I forgot about the SH4 - it gives you a bank of registers covering r0 to r7 that switch in during irqs and exceptions so that simple exception handlers don't have to save and restore those regs. All others need to be saved and restored, and the banked r0 to r7 need to be saved/restored when calling C code for handlers. Again, see that entry.s file to see how kos handles it. Looking at the kos code for these things will be very instructive.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=31525"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=29&amp;p=1050799"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p1050800"></a>
+				<b class="postauthor" style="color: #00AA00">			
+				<a href="./memberlist.php?mode=viewprofile&amp;u=32942" style="color: #00AA00;" class="username-coloured">bogglez</a>			
+			</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> <a href="#p1050800">Re: Trying to get interrupts to work</a></div><div style="float: right;"><a href="./viewtopic.php?p=1050800#p1050800"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Fri Jul 15, 2016 10:20 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Moderator</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5silvermedals.gif" alt="Moderator" title="Moderator" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=32942_1414274460.jpg" width="138" height="138" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sun Apr 20, 2014 7:45 am<br /><b>Posts:</b> 567
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Thanks for helping, Chilly!<br />I'm aware of most what you said, except the hardware init stuff, I'll look into that, thanks!<br /><br />The manual says &quot;BL=1: Interrupt requests are masked. If a general exception other than a user break occurs while BL = 1, the processor switches to the reset state.&quot;<br />So if I get 2 exceptions before I handled the first the Dreamcast resets, right? I've been reading various stuff so I'm a bit overwhelmed right now, need to get this knowledge sorted out, sorry <img src="./images/smilies/icon_e_biggrin.gif" alt=":D" title="Very Happy" /><br /><br />I guess I'll try to init a timer interrupt or something to cause interrupt handling.</div>
+
+					
+						<div class="postbody"><br />_________________<br />Wiki &amp; tutorials: <!-- m --><a class="postlink" href="http://dcemulation.org/?title=Development">http://dcemulation.org/?title=Development</a><!-- m --><br />Wiki feedback: <!-- l --><a class="postlink-local" href="http://dcemulation.org/phpBB/viewtopic.php?f=29&amp;t=103940">viewtopic.php?f=29&amp;t=103940</a><!-- l --><br />My libgl playground (not for production): <!-- m --><a class="postlink" href="https://bitbucket.org/bogglez/libgl15">https://bitbucket.org/bogglez/libgl15</a><!-- m --><br />My lxdream fork (with small fixes): <!-- m --><a class="postlink" href="https://bitbucket.org/bogglez/lxdream">https://bitbucket.org/bogglez/lxdream</a><!-- m --></div>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=32942"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=29&amp;p=1050800"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p1050802"></a>
+				<b class="postauthor">			
+				<a href="./memberlist.php?mode=viewprofile&amp;u=31525">Chilly Willy</a>			
+			</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> <a href="#p1050802">Re: Trying to get interrupts to work</a></div><div style="float: right;"><a href="./viewtopic.php?p=1050802#p1050802"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Fri Jul 15, 2016 11:56 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">DC Developer</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5redmedals.gif" alt="DC Developer" title="DC Developer" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Thu Aug 20, 2009 9:00 am<br /><b>Posts:</b> 414
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Yes, most processors do something like that because an exception during an exception is usually fatal. BTW, interrupts are also exceptions, just a specific type (asynchronously externally generated and possibly masked).<br /><br />When testing exception handlers, a trap command is very handy as you can use inline assembly to trigger it where and when you want.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=31525"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=29&amp;p=1050802"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p1050808"></a>
+				<b class="postauthor" style="color: #00AA00">			
+				<a href="./memberlist.php?mode=viewprofile&amp;u=32942" style="color: #00AA00;" class="username-coloured">bogglez</a>			
+			</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> <a href="#p1050808">Re: Trying to get interrupts to work</a></div><div style="float: right;"><a href="./viewtopic.php?p=1050808#p1050808"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Mon Jul 18, 2016 11:59 am&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Moderator</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5silvermedals.gif" alt="Moderator" title="Moderator" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=32942_1414274460.jpg" width="138" height="138" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sun Apr 20, 2014 7:45 am<br /><b>Posts:</b> 567
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">I got everything working now, apart from the switch to user mode. As I feared there was something else going on as well.<br /><br />I wanted to do hardware initialization etc before I jump to main and then disallow access to privileged instructions, so I tried to switch to user mode before the jump.<br />However, because mainaddr is not within U0, I get a &quot;data address error (write)&quot; when I perform &quot;ldc r0,sr&quot; (I found out by actually printing the exception code).<br /><br />So I think I have to create a linker script that puts the code which changes SR to user mode then jumps to main in a different memory area.<br />However, I'm not sure where I'm allowed to put it and how to do that.. any advice?<br />In my Makefile I tried &quot; -Wl,--section-start=usercode=0x0,-Ttext=0x8c010000&quot; (text for the start function) and put &quot;.section usercode&quot; in front of my SR changing function, but that wouldn't work. :-/</div>
+
+					
+						<div class="postbody"><br />_________________<br />Wiki &amp; tutorials: <!-- m --><a class="postlink" href="http://dcemulation.org/?title=Development">http://dcemulation.org/?title=Development</a><!-- m --><br />Wiki feedback: <!-- l --><a class="postlink-local" href="http://dcemulation.org/phpBB/viewtopic.php?f=29&amp;t=103940">viewtopic.php?f=29&amp;t=103940</a><!-- l --><br />My libgl playground (not for production): <!-- m --><a class="postlink" href="https://bitbucket.org/bogglez/libgl15">https://bitbucket.org/bogglez/libgl15</a><!-- m --><br />My lxdream fork (with small fixes): <!-- m --><a class="postlink" href="https://bitbucket.org/bogglez/lxdream">https://bitbucket.org/bogglez/lxdream</a><!-- m --></div>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=32942"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=29&amp;p=1050808"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p1050809"></a>
+				<b class="postauthor">			
+				<a href="./memberlist.php?mode=viewprofile&amp;u=31525">Chilly Willy</a>			
+			</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> <a href="#p1050809">Re: Trying to get interrupts to work</a></div><div style="float: right;"><a href="./viewtopic.php?p=1050809#p1050809"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Mon Jul 18, 2016 1:33 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">DC Developer</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5redmedals.gif" alt="DC Developer" title="DC Developer" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Thu Aug 20, 2009 9:00 am<br /><b>Posts:</b> 414
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Most OSes setup the user level task at kernel level, then use a return from exception to run the task. One of the main things a return from exception does is restore the level the task had before the exception occurred. So it can switch you from kernel to user mode while simultaneously jumping to the code address. On the SH4, the instruction is RTE, like many other ISAs. You set the ssr with the value you want the sr to be in the code, set spc to the value you want the pc to be, then do RTE. It's a delay slot instruction, so be sure to follow it with a NOP.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=31525"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=29&amp;p=1050809"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row2">
+
+			<td align="center" valign="middle">
+				<a name="p1050810"></a>
+				<b class="postauthor" style="color: #00AA00">			
+				<a href="./memberlist.php?mode=viewprofile&amp;u=32942" style="color: #00AA00;" class="username-coloured">bogglez</a>			
+			</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> <a href="#p1050810">Re: Trying to get interrupts to work</a></div><div style="float: right;"><a href="./viewtopic.php?p=1050810#p1050810"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Mon Jul 18, 2016 2:08 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">Moderator</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5silvermedals.gif" alt="Moderator" title="Moderator" /></td>
+				</tr>
+			
+				<tr>
+					<td><img src="./download/file.php?avatar=32942_1414274460.jpg" width="138" height="138" alt="User avatar" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Sun Apr 20, 2014 7:45 am<br /><b>Posts:</b> 567
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody"><div class="quotetitle">Chilly Willy wrote:</div><div class="quotecontent">Most OSes setup the user level task at kernel level, then use a return from exception to run the task. One of the main things a return from exception does is restore the level the task had before the exception occurred. So it can switch you from kernel to user mode while simultaneously jumping to the code address. On the SH4, the instruction is RTE, like many other ISAs. You set the ssr with the value you want the sr to be in the code, set spc to the value you want the pc to be, then do RTE. It's a delay slot instruction, so be sure to follow it with a NOP.</div><br />That's a neat trick!<br />I replaced the jsr to main with the following:<br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">&nbsp; &nbsp;mov.l mainaddr,r0<br />!&nbsp; &nbsp;jsr @r0<br />&nbsp; &nbsp;ldc r0,spc<br />&nbsp; &nbsp;mov.l user_sr,r0 ! user_sr: .long 0x00000000<br />&nbsp; &nbsp;ldc r0,ssr<br />&nbsp; &nbsp;rte<br />&nbsp; &nbsp;nop<br /></div><br /><br />If I use the privileged SR, everything's fine. But this way I get the &quot;data access error (write)&quot; again. So I will need to put main into a different memory area somehow, right?</div>
+
+					
+						<div class="postbody"><br />_________________<br />Wiki &amp; tutorials: <!-- m --><a class="postlink" href="http://dcemulation.org/?title=Development">http://dcemulation.org/?title=Development</a><!-- m --><br />Wiki feedback: <!-- l --><a class="postlink-local" href="http://dcemulation.org/phpBB/viewtopic.php?f=29&amp;t=103940">viewtopic.php?f=29&amp;t=103940</a><!-- l --><br />My libgl playground (not for production): <!-- m --><a class="postlink" href="https://bitbucket.org/bogglez/libgl15">https://bitbucket.org/bogglez/libgl15</a><!-- m --><br />My lxdream fork (with small fixes): <!-- m --><a class="postlink" href="https://bitbucket.org/bogglez/lxdream">https://bitbucket.org/bogglez/lxdream</a><!-- m --></div>
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row2">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=32942"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=29&amp;p=1050810"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr class="row1">
+
+			<td align="center" valign="middle">
+				<a name="p1050811"></a>
+				<b class="postauthor">			
+				<a href="./memberlist.php?mode=viewprofile&amp;u=31525">Chilly Willy</a>			
+			</b>
+			</td>
+			<td width="100%" height="25">
+				<table width="100%" cellspacing="0">
+				<tr>
+				
+					<td class="gensmall" width="100%"><div style="float: left;">&nbsp;<b>Post subject:</b> <a href="#p1050811">Re: Trying to get interrupts to work</a></div><div style="float: right;"><a href="./viewtopic.php?p=1050811#p1050811"><img src="./styles/subsilver2/imageset/icon_post_target.gif" width="12" height="9" alt="Post" title="Post" /></a><b>Posted:</b> Mon Jul 18, 2016 4:11 pm&nbsp;</div></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td valign="top" class="profile">
+				<table cellspacing="4" align="center" width="150">
+			
+				<tr>
+					<td><img src="./styles/subsilver2/imageset/en/icon_user_offline.gif" alt="Offline" title="Offline" /></td>
+				</tr>
+			
+				<tr>
+					<td class="postdetails">DC Developer</td>
+				</tr>
+			
+				<tr>
+					<td><img src="./images/ranks/5redmedals.gif" alt="DC Developer" title="DC Developer" /></td>
+				</tr>
+			
+				</table>
+
+				<span class="postdetails">
+					<br /><b>Joined:</b> Thu Aug 20, 2009 9:00 am<br /><b>Posts:</b> 414
+				</span>
+
+			</td>
+			<td valign="top">
+				<table width="100%" cellspacing="5">
+				<tr>
+					<td>
+					
+
+						<div class="postbody">Oh, you need to edit the dreamcast environment script. Look for this line<br /><br /><div class="codetitle"><b>Code:</b></div><div class="codecontent">export KOS_LDFLAGS=&quot;${KOS_LDFLAGS} -ml -m4-single-only -Wl,-Ttext=0x8c010000 -Wl,--gc-sections&quot;<br /></div><br /><br />That sets the address that everything links to. Hmm - that does lead to a tricky situation - you need some of the code in kernel space to start things off, but then you need the rest in user space. You may need to compile the user code completely separate from the standard KOS code, link the user code to the proper user address, then load that code by hand inside the KOS code. Look at libelf in dctool as an example of using libelf. I don't see being able to link parts of the code to one address and parts to another as a single object. Not without compiling/linking it to binary, then embedding it in the other code. For your small tests, that may be the easiest thing. Compile the test function, link it with the proper user address, use objcopy to convert it to binary, then embed that in your KOS test code.</div>
+
+					<br clear="all" /><br />
+
+						<table width="100%" cellspacing="0">
+						<tr valign="middle">
+							<td class="gensmall" align="right">
+							
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr class="row1">
+
+			<td class="profile"><strong><a href="#wrapheader">Top</a></strong></td>
+			<td><div class="gensmall" style="float: left;">&nbsp;<a href="./memberlist.php?mode=viewprofile&amp;u=31525"><img src="./styles/subsilver2/imageset/en/icon_user_profile.gif" alt="Profile" title="Profile" /></a> &nbsp;</div> <div class="gensmall" style="float: right;"><a href="./posting.php?mode=quote&amp;f=29&amp;p=1050811"><img src="./styles/subsilver2/imageset/en/icon_post_quote.gif" alt="Reply with quote" title="Reply with quote" /></a> &nbsp;</div></td>
+	
+		</tr>
+
+	<tr>
+		<td class="spacer" colspan="2" height="1"><img src="images/spacer.gif" alt="" width="1" height="1" /></td>
+	</tr>
+	</table>
+
+	<table width="100%" cellspacing="1" class="tablebg">
+	<tr align="center">
+		<td class="cat"><form name="viewtopic" method="post" action="./viewtopic.php?f=29&amp;t=104038"><span class="gensmall">Display posts from previous:</span> <select name="st" id="st"><option value="0" selected="selected">All posts</option><option value="1">1 day</option><option value="7">7 days</option><option value="14">2 weeks</option><option value="30">1 month</option><option value="90">3 months</option><option value="180">6 months</option><option value="365">1 year</option></select>&nbsp;<span class="gensmall">Sort by</span> <select name="sk" id="sk"><option value="a">Author</option><option value="t" selected="selected">Post time</option><option value="s">Subject</option></select> <select name="sd" id="sd"><option value="a" selected="selected">Ascending</option><option value="d">Descending</option></select>&nbsp;<input class="btnlite" type="submit" value="Go" name="sort" /></form></td>
+	</tr>
+	</table>
+	
+
+	<table width="100%" cellspacing="1">
+	<tr>
+		<td align="left" valign="middle" nowrap="nowrap">
+		<a href="./posting.php?mode=post&amp;f=29"><img src="./styles/subsilver2/imageset/en/button_topic_new.gif" alt="Post new topic" title="Post new topic" /></a>&nbsp;<a href="./posting.php?mode=reply&amp;f=29&amp;t=104038"><img src="./styles/subsilver2/imageset/en/button_topic_reply.gif" alt="Reply to topic" title="Reply to topic" /></a>
+		</td>
+		
+			<td class="nav" valign="middle" nowrap="nowrap">&nbsp;Page <strong>1</strong> of <strong>1</strong><br /></td>
+			<td class="gensmall" nowrap="nowrap">&nbsp;[ 13 posts ]&nbsp;</td>
+			<td class="gensmall" width="100%" align="right" nowrap="nowrap"></td>
+		
+	</tr>
+	</table>
+
+</div>
+
+
+<div id="pagefooter"></div>
+
+<br clear="all" />
+<table class="tablebg" width="100%" cellspacing="1" cellpadding="0" style="margin-top: 5px;">
+	<tr>
+		<td class="row1">
+			<p class="breadcrumbs"><a href="./index.php">Board index</a> &#187; <a href="./viewforum.php?f=65">Programming and Development</a> &#187; <a href="./viewforum.php?f=29">Programming Discussion</a></p>
+			<p class="datetime">All times are UTC - 8 hours [ <abbr title="Daylight Saving Time">DST</abbr> ]</p>
+		</td>
+	</tr>
+	</table>
+	<br clear="all" />
+
+	<table class="tablebg" width="100%" cellspacing="1">
+	<tr>
+		<td class="cat"><h4>Who is online</h4></td>
+	</tr>
+	<tr>
+		<td class="row1"><p class="gensmall">Users browsing this forum: No registered users and 1 guest</p></td>
+	</tr>
+	</table>
+
+
+<br clear="all" />
+
+<table width="100%" cellspacing="1">
+<tr>
+	<td width="40%" valign="top" nowrap="nowrap" align="left"></td>
+	<td align="right" valign="top" nowrap="nowrap"><span class="gensmall">You <strong>cannot</strong> post new topics in this forum<br />You <strong>cannot</strong> reply to topics in this forum<br />You <strong>cannot</strong> edit your posts in this forum<br />You <strong>cannot</strong> delete your posts in this forum<br />You <strong>cannot</strong> post attachments in this forum<br /></span></td>
+</tr>
+</table>
+
+<br clear="all" />
+
+<table width="100%" cellspacing="0">
+<tr>
+	<td><form method="get" name="search" action="./search.php"><span class="gensmall">Search for:</span> <input class="post" type="text" name="keywords" size="20" /> <input class="btnlite" type="submit" value="Go" /><input type="hidden" name="t" value="104038" />
+<input type="hidden" name="sf" value="msgonly" />
+</form></td>
+	<td align="right">
+	<form method="post" name="jumpbox" action="./viewforum.php" onsubmit="if(document.jumpbox.f.value == -1){return false;}">
+
+	<table cellspacing="0" cellpadding="0" border="0">
+	<tr>
+		<td nowrap="nowrap"><span class="gensmall">Jump to:</span>&nbsp;<select name="f" onchange="if(this.options[this.selectedIndex].value != -1){ document.forms['jumpbox'].submit() }">
+
+		
+			<option value="-1">Select a forum</option>
+		<option value="-1">------------------</option>
+			<option value="63">News</option>
+		
+			<option value="72">&nbsp; &nbsp;Front Page News and Forum Guidelines</option>
+		
+			<option value="58">&nbsp; &nbsp;&nbsp; &nbsp;Annual Poll Forum</option>
+		
+			<option value="64">Dreamcast Talk</option>
+		
+			<option value="34">&nbsp; &nbsp;Dreamcast Homebrew Software Discussion</option>
+		
+			<option value="30">&nbsp; &nbsp;&nbsp; &nbsp;Official DreamSNES Forum</option>
+		
+			<option value="25">&nbsp; &nbsp;&nbsp; &nbsp;bleemcast! Archive</option>
+		
+			<option value="37">&nbsp; &nbsp;&nbsp; &nbsp;Art, Skins, and Covers</option>
+		
+			<option value="36">&nbsp; &nbsp;Dreamcast Gaming and Emulation</option>
+		
+			<option value="81">&nbsp; &nbsp;&nbsp; &nbsp;Dumpcast Project Forum</option>
+		
+			<option value="80">&nbsp; &nbsp;&nbsp; &nbsp;Official Earthcall Planet Ring Server Forum</option>
+		
+			<option value="31">&nbsp; &nbsp;Hardware Hacking and Repair</option>
+		
+			<option value="79">Hosted Forums</option>
+		
+			<option value="75">&nbsp; &nbsp;Official Sylverant PSO Server Forum</option>
+		
+			<option value="83">&nbsp; &nbsp;&nbsp; &nbsp;PSO Gameplay</option>
+		
+			<option value="86">&nbsp; &nbsp;Official Reicast Discussion Forum</option>
+		
+			<option value="65">Programming and Development</option>
+		
+			<option value="29" selected="selected">&nbsp; &nbsp;Programming Discussion</option>
+		
+			<option value="45">&nbsp; &nbsp;Developmental Ideas</option>
+		
+			<option value="14">&nbsp; &nbsp;First Person Shooters Development</option>
+		
+			<option value="59">&nbsp; &nbsp;Beats of Rage Development</option>
+		
+			<option value="66">Other Stuff</option>
+		
+			<option value="35">&nbsp; &nbsp;Off-Topic Forum</option>
+		
+			<option value="26">&nbsp; &nbsp;Gaming Forum</option>
+		
+			<option value="78">&nbsp; &nbsp;&nbsp; &nbsp;Dreamcast Gaming Discussion</option>
+		
+			<option value="54">&nbsp; &nbsp;/dev/null</option>
+		
+
+		</select>&nbsp;<input class="btnlite" type="submit" value="Go" /></td>
+	</tr>
+	</table>
+
+	</form>
+</td>
+</tr>
+</table>
+
+
+</div>
+
+<div id="wrapfooter">
+	
+	<span class="copyright">Powered by <a href="https://www.phpbb.com/">phpBB</a>&reg; Forum Software &copy; phpBB Group
+	</span>
+</div>
+
+</body>
+</html>

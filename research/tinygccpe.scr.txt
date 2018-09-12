@@ -1,0 +1,111 @@
+/* tinygccpe.scr: GNU ld linker script for smaller PE .exe output
+ * by pts@fazekas.hu at Fri Feb  3 15:41:13 CET 2017
+ *
+ * It's different from the default by:
+ *
+ * * It drops initializers (e.g. .init, .ctors), and fails if the code tries
+ *   to use them.
+ * * It drops exceptions (e.g. .pdata), and fails if the code tries
+ *   to use them.
+ * * It merges .data and .rdata. 
+ *
+ * Other recommended gcc flags for small .exe file: -fno-ident -fno-stack-protector -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=1 -mpreferred-stack-boundary=2 -falign-jumps=1 -falign-loops=1
+ *
+ * Use with: i686-w64-mingw32-gcc -Wl,--section-alignment,16,--file-alignment,16,-T,tinygccpe.scr -nostdlib -nodefaultlibs -nostartfiles ... -lkernel32
+ * Also works with: i586-mingw32msvc-gcc -Wl,...
+ *
+ * Define `void __cdecl mainCRTStartup()' instead of `main'.
+ *
+ * Define `void __stdcall WinMainCRTStartup()' instead of `WinMain'.
+ * 
+ */
+OUTPUT_FORMAT(pei-i386)
+SECTIONS {
+  /* Make the virtual address and file offset synced if the alignment is
+   * lower than the target page size.
+   */
+  . = SIZEOF_HEADERS;
+  . = ALIGN(__section_alignment__);
+  .text __image_base__ + (__section_alignment__ < 0x1000 ?
+      . : __section_alignment__) : {
+    *(.text) *(SORT(.text$*)) *(.text.*) *(.gnu.linkonce.t.*) *(.glue_7t)
+    *(.glue_7)
+    PROVIDE (etext = .);
+    PROVIDE (_etext = .);
+  }
+  .data BLOCK(__section_alignment__) : {
+    __data_start__ = .;
+    *(.data) *(.data2) *(SORT(.data$*))
+    *(.rdata) *(SORT(.rdata$*))  /* Merge .data and .rdata to save size. */
+    __rt_psrelocs_start = .;
+    *(.rdata_runtime_pseudo_reloc)
+    __rt_psrelocs_end = .;
+    __data_end__ = .;
+    *(.data_cygwin_nocopy)
+  }
+  __rt_psrelocs_size = __rt_psrelocs_end - __rt_psrelocs_start;
+  ___RUNTIME_PSEUDO_RELOC_LIST_END__ = .;
+  __RUNTIME_PSEUDO_RELOC_LIST_END__ = .;
+  ___RUNTIME_PSEUDO_RELOC_LIST__ = . - __rt_psrelocs_size;
+  __RUNTIME_PSEUDO_RELOC_LIST__ = . - __rt_psrelocs_size;
+  .bss BLOCK(__section_alignment__) : {
+    __bss_start__ = .;
+    *(.bss)
+    *(COMMON)
+    __bss_end__ = .;
+  }
+  .idata BLOCK(__section_alignment__) : {  /* This is pure magic. */
+    SORT(*)(.idata$2)
+    SORT(*)(.idata$3)
+    /* These zeroes mark the end of the import list.  */
+    LONG (0); LONG (0); LONG (0); LONG (0); LONG (0);
+    SORT(*)(.idata$4)
+    __IAT_start__ = .;
+    SORT(*)(.idata$5)
+    __IAT_end__ = .;
+    SORT(*)(.idata$6)
+    SORT(*)(.idata$7)
+  }
+  /* Windows TLS expects .tls$AAA to be at the start and .tls$ZZZ to be
+     at the end of section.  This is important because _tls_start MUST
+     be at the beginning of the section to enable SECREL32 relocations with TLS
+     data.  */
+  .tls BLOCK(__section_alignment__) : {  /* Thread-local. */
+    ___tls_start__ = .;
+    *(.tls$AAA) *(.tls) *(.tls$) *(SORT(.tls$*)) *(.tls$ZZZ)
+    ___tls_end__ = .;
+  }
+  .endjunk BLOCK(__section_alignment__) : {
+    PROVIDE (end = .);  /* Deprecated. */
+    PROVIDE (_end = .);
+    __end__ = .;
+  }
+  .rsrc BLOCK(__section_alignment__) : { *(.rsrc) *(SORT(.rsrc$*)) }
+  .reloc BLOCK(__section_alignment__) : { *(.reloc) }
+  .init : {
+    *(.init) *(.fini) *(.ctors) *(.ctor) *(SORT(.ctors.*)) *(.dtors) *(.dtor) *(SORT(.dtors.*)) *(.CRT*)
+    ASSERT(0, "Initializers (constructors and destructors) are not supported.");
+  }
+  .pdata : {
+    *(.gcc_exc) *(.gcc_except_table) *(.pdata)
+    ASSERT(0, "Exception handling is not supported.");
+  }
+  /DISCARD/ : {
+    *(.note.GNU-stack) *(.gnu_debuglink) *(.gnu.lto_*) *(.note.ABI-tag)
+    *(.eh_frame .eh_frame_hdr)  /* CFI for the debugger (gdb). */
+    *(.jcr)  /* Java class registrations. */
+    *(.got.plt) *(.comment) *(.note) *(.drectve)
+    /* DWARF debug, by `gcc -g'. */
+    *(.debug* .line .zdebug* .gnu.linkonce.wi.* .gnu.linkonce.wt.*)
+    *(.stab .stabstr .stab.*)  /* Stabs debug. */
+    /* No difference, link warnings still displayed. */
+    *(.gnu.warning .gnu.warning.*) *(.gnu.version*)
+  }
+  /* Without this block ld will append all such sections to the target
+   * executable. We don't know how to handle them, so let's not append them.
+   */
+  .unsupported : /* ALIGN(1) SUBALIGN(1) */ {
+    *(*)
+    ASSERT(0, "Found non-empty unsupported section in object files.");
+  }
+}
